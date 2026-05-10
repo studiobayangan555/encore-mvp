@@ -13,15 +13,26 @@ export function createClient() {
         autoRefreshToken: true,
         detectSessionInUrl: true,
         storageKey: 'encore-auth',
+      },
+      global: {
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+        }
       }
     })
   }
   return client
 }
 
-// Fresh client for data queries — not affected by auth state
 export function createDataClient() {
   return createSupabaseClient(url, key, {
-    auth: { persistSession: false }
+    auth: { persistSession: false },
+    global: {
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+      }
+    }
   })
 }
