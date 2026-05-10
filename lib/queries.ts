@@ -2,7 +2,7 @@
 // Centralised query functions used across all pages.
 // All functions return typed data or empty arrays on error.
 
-import { createClient } from '@/lib/supabase'
+import { createDataClient } from '@/lib/supabase'
 
 export interface Show {
   id: string
@@ -82,7 +82,7 @@ export interface BlogPost {
 // ─── SHOWS ───────────────────────────────────────────────────
 
 export async function getShowsWithReviews(): Promise<Show[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const today = new Date().toISOString().split('T')[0]
   console.log('[encore] fetching shows with reviews, today =', today)
   const { data, error } = await supabase
@@ -101,7 +101,7 @@ export async function getShowsWithReviews(): Promise<Show[]> {
 }
 
 export async function getUpcomingShows(): Promise<Show[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const today = new Date().toISOString().split('T')[0]
   const { data, error } = await supabase
     .from('shows')
@@ -114,7 +114,7 @@ export async function getUpcomingShows(): Promise<Show[]> {
 }
 
 export async function getFeaturedShow(): Promise<Show | null> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const today = new Date().toISOString().split('T')[0]
   const { data, error } = await supabase
     .from('shows')
@@ -129,7 +129,7 @@ export async function getFeaturedShow(): Promise<Show | null> {
 }
 
 export async function getShowById(id: string): Promise<Show | null> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('shows')
     .select('*')
@@ -142,7 +142,7 @@ export async function getShowById(id: string): Promise<Show | null> {
 }
 
 export async function getShowsByPromoter(promoterSlug: string, excludeId: string): Promise<Show[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('shows')
     .select('*')
@@ -157,7 +157,7 @@ export async function getShowsByPromoter(promoterSlug: string, excludeId: string
 }
 
 export async function getTrendingShows(excludeId: string): Promise<Show[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('shows')
     .select('*')
@@ -173,7 +173,7 @@ export async function getTrendingShows(excludeId: string): Promise<Show[]> {
 // ─── REVIEWS ─────────────────────────────────────────────────
 
 export async function getReviewsByShow(showId: string): Promise<Review[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('reviews')
     .select('*, profiles(display_name)')
@@ -186,7 +186,7 @@ export async function getReviewsByShow(showId: string): Promise<Review[]> {
 // ─── COMMENTS ────────────────────────────────────────────────
 
 export async function getCommentsByTarget(targetId: string, targetType: string): Promise<Comment[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('comments')
     .select('*, profiles(display_name)')
@@ -211,7 +211,7 @@ export async function getCommentsByTarget(targetId: string, targetType: string):
 // ─── BLOG ─────────────────────────────────────────────────────
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
@@ -222,7 +222,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
@@ -236,7 +236,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 // ─── SEARCH ──────────────────────────────────────────────────
 
 export async function searchShows(query: string, country?: string): Promise<Show[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   let q = supabase
     .from('shows')
     .select('*')
@@ -250,7 +250,7 @@ export async function searchShows(query: string, country?: string): Promise<Show
 }
 
 export async function searchBlogPosts(query: string): Promise<BlogPost[]> {
-  const supabase = createClient()
+  const supabase = createDataClient()
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
