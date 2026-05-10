@@ -44,8 +44,7 @@ export default function AuthPage() {
       if (error) { setError(error.message); setLoading(false); return }
       if (data.session) {
         // Email confirmation disabled — go straight to onboarding
-        router.push('/onboarding')
-        router.refresh()
+        window.location.href = '/reviews'
       } else {
         // Email confirmation enabled — show message
         setMessage('Check your email to confirm your account, then log in.')

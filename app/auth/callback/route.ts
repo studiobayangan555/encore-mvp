@@ -12,7 +12,10 @@ export async function GET(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) return NextResponse.redirect(`${origin}${next}`)
+    if (!error) {
+      return NextResponse.redirect(`${origin}${next}`)
+    }
+    console.error('Auth callback error:', error)
   }
 
   return NextResponse.redirect(`${origin}/auth/login?error=auth_failed`)
