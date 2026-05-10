@@ -1,3 +1,5 @@
+'use client'
+
 export default function PrivacyPage() {
   const effective = '1 May 2026'
   const H = (t: string) => (

@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, S } from '@/components'
 

@@ -1,3 +1,5 @@
+'use client'
+
 import { TopNav, BottomNav, Footer, MobileHeader, S } from '@/components'
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
