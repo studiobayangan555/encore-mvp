@@ -20,10 +20,8 @@ function SearchResults() {
   const matchedReviews: any[] = []
 
   useEffect(() => {
-    // Load all shows when coming from All Reviews link
     const searchTerm = (query === '' || query === 'all') ? '' : query
     searchShows(searchTerm).then(data => {
-      // If filter=reviews, only show past shows that have reviews
       if (filter === 'reviews') {
         setMatchedShows(data.filter(s => s.is_past && s.review_count > 0))
       } else {
@@ -105,7 +103,7 @@ function SearchResults() {
       )}
 
       {/* Shows results */}
-      {query && (activeTab === 'all' || activeTab === 'shows') && showShows.length > 0 && (
+      {(query || filter) && (activeTab === 'all' || activeTab === 'shows') && showShows.length > 0 && (
         <div style={{ marginBottom: 40 }}>
           {activeTab === 'all' && (
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Shows</p>
@@ -130,7 +128,7 @@ function SearchResults() {
       )}
 
       {/* Reviews results */}
-      {query && (activeTab === 'all' || activeTab === 'reviews') && showReviews.length > 0 && (
+      {(query || filter) && (activeTab === 'all' || activeTab === 'reviews') && showReviews.length > 0 && (
         <div style={{ marginBottom: 40 }}>
           {activeTab === 'all' && (
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Reviews</p>
@@ -155,7 +153,7 @@ function SearchResults() {
       )}
 
       {/* Blog results */}
-      {query && (activeTab === 'all' || activeTab === 'blog') && showPosts.length > 0 && (
+      {(query || filter) && (activeTab === 'all' || activeTab === 'blog') && showPosts.length > 0 && (
         <div style={{ marginBottom: 40 }}>
           {activeTab === 'all' && (
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Blog</p>
