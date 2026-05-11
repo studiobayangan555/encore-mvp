@@ -11,20 +11,29 @@ type ResultTab = 'all' | 'shows' | 'reviews' | 'blog'
 function SearchResults() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
-  const [activeTab, setActiveTab] = useState<ResultTab>('all')
+  const filter = searchParams.get('filter') || ''
+  const [activeTab, setActiveTab] = useState<ResultTab>(filter === 'reviews' ? 'shows' : 'all')
   const [showMore, setShowMore] = useState(false)
 
   const [matchedShows, setMatchedShows] = useState<Show[]>([])
   const [matchedPosts, setMatchedPosts] = useState<BlogPost[]>([])
-  const matchedReviews: any[] = [] // reviews searched via shows
+  const matchedReviews: any[] = []
 
   useEffect(() => {
-    if (!query) { setMatchedShows([]); setMatchedPosts([]); return }
-    // 'all' is a special keyword meaning show everything
-    const searchTerm = query === 'all' ? '' : query
-    searchShows(searchTerm).then(setMatchedShows)
-    searchBlogPosts(searchTerm).then(setMatchedPosts)
-  }, [query])
+    // Load all shows when coming from All Reviews link
+    const searchTerm = (query === '' || query === 'all') ? '' : query
+    searchShows(searchTerm).then(data => {
+      // If filter=reviews, only show past shows that have reviews
+      if (filter === 'reviews') {
+        setMatchedShows(data.filter(s => s.is_past && s.review_count > 0))
+      } else {
+        setMatchedShows(data)
+      }
+    })
+    if (filter !== 'reviews') {
+      searchBlogPosts(searchTerm).then(setMatchedPosts)
+    }
+  }, [query, filter])
 
   const totalResults = matchedShows.length + matchedReviews.length + matchedPosts.length
 
@@ -62,8 +71,8 @@ function SearchResults() {
       <div style={{ ...S.pageHeader, marginBottom: 0 }}>
         <span style={S.pageLabel}>Search</span>
         <h1 style={{ ...S.pageTitle, fontSize: 32 }}>
-          {query === 'all' ? (
-            <>All Reviews & Shows</>
+          {filter === 'reviews' ? (
+            <>All Reviews</>
           ) : query ? (
             <>{totalResults} result{totalResults !== 1 ? 's' : ''} for <span style={{ color: 'var(--accent)' }}>"{query}"</span></>
           ) : 'Search'}

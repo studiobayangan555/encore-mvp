@@ -33,6 +33,51 @@ const GRADIENTS = [
   'linear-gradient(135deg,#1a0a00,#cc4400)',
 ]
 
+function ListRow({ show, idx, topReviews }: { show: Show; idx: number; topReviews: Record<string, Review> }) {
+  const topReview = topReviews[show.id]
+  const grad = GRADIENTS[idx % GRADIENTS.length]
+  const authorName = topReview?.profiles?.display_name || 'Fan'
+  return (
+    <Link href={`/events/${show.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', border: '1px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface)', overflow: 'hidden', marginBottom: 10, transition: 'border-color .2s' }}
+      onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'}
+      onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
+    >
+      <ShowPoster posterUrl={show.poster_url} gradient={grad} style={{ width: 88, flexShrink: 0, alignSelf: 'stretch' }}>
+        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--accent)', zIndex: 2 }} />
+      </ShowPoster>
+      <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, borderRight: '1px solid var(--border)', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ marginBottom: 5 }}><EventBadge type={show.type} /></div>
+            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--text)', lineHeight: 1.2, marginBottom: 3 }}>{show.artist}</p>
+            <p style={{ fontSize: 13, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.venue}, {show.city} · {show.date_display}</p>
+          </div>
+          <div style={{ textAlign: 'right' as const, flexShrink: 0 }}>
+            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating.toFixed(1)} ★</p>
+            <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{show.review_count} reviews</p>
+          </div>
+        </div>
+        {topReview && (
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, fontSize: 13, color: 'var(--muted)', fontStyle: 'italic', lineHeight: 1.5 }}>
+            <span style={{ color: 'var(--text)', fontStyle: 'normal', fontWeight: 500 }}>"{topReview.headline}"</span>
+            {' '}— {authorName} · <span style={{ color: 'var(--accent)', fontStyle: 'normal' }}>Read all {show.review_count} reviews →</span>
+          </div>
+        )}
+      </div>
+      <div style={{ width: 130, flexShrink: 0, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
+        <div>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Reviews</p>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.review_count}</p>
+        </div>
+        <div>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Going</p>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.going_count}</p>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export default function ReviewsPage() {
   const [shows, setShows] = useState<Show[]>([])
   const [topReviews, setTopReviews] = useState<Record<string, Review>>({})
@@ -67,50 +112,8 @@ export default function ReviewsPage() {
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   }), [shows, activeFilter])
 
-  function ListRow({ show, idx }: { show: Show; idx: number }) {
-    const topReview = topReviews[show.id]
-    const grad = GRADIENTS[idx % GRADIENTS.length]
-    const authorName = topReview?.profiles?.display_name || 'Fan'
-    return (
-      <Link href={`/events/${show.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', border: '1px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface)', overflow: 'hidden', marginBottom: 10, transition: 'border-color .2s' }}
-        onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'}
-        onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
-      >
-        <Thumbnail gradient={grad} posterUrl={show.poster_url} />
-        <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, borderRight: '1px solid var(--border)', minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ marginBottom: 5 }}><EventBadge type={show.type} /></div>
-              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--text)', lineHeight: 1.2, marginBottom: 3 }}>{show.artist}</p>
-              <p style={{ fontSize: 13, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.venue}, {show.city} · {show.date_display}</p>
-            </div>
-            <div style={{ textAlign: 'right' as const, flexShrink: 0 }}>
-              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating.toFixed(1)} ★</p>
-              <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{show.review_count} reviews</p>
-            </div>
-          </div>
-          {topReview && (
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, fontSize: 13, color: 'var(--muted)', fontStyle: 'italic', lineHeight: 1.5 }}>
-              <span style={{ color: 'var(--text)', fontStyle: 'normal', fontWeight: 500 }}>"{topReview.headline}"</span>
-              {' '}— {authorName} · <span style={{ color: 'var(--accent)', fontStyle: 'normal' }}>Read all {show.review_count} reviews →</span>
-            </div>
-          )}
-        </div>
-        <div style={{ width: 130, flexShrink: 0, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
-          <div>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Reviews</p>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.review_count}</p>
-          </div>
-          <div>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Going</p>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.going_count}</p>
-          </div>
-        </div>
-      </Link>
-    )
-  }
 
-  const skeleton = (
+  const skeleton = (  const skeleton = (
     <div>
       {[1,2,3].map(i => (
         <div key={i} style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface)', overflow: 'hidden', marginBottom: 10, height: 110 }}>
@@ -194,7 +197,7 @@ export default function ReviewsPage() {
                     <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, fontWeight: 500, padding: '7px 16px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', transition: 'all .15s' }}>{f}</button>
                   ))}
                 </div>
-                <Link href="/search?q=all" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px' }}>All Reviews →</Link>
+                <Link href="/search?q=&filter=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px' }}>All Reviews →</Link>
               </div>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 14 }}>
                 {loading ? 'Loading…' : error ? 'Error loading data' : `${sorted.length} shows with reviews`}
@@ -208,7 +211,7 @@ export default function ReviewsPage() {
                 <div style={{ textAlign: 'center' as const, padding: '40px 0' }}>
                   <p style={{ fontSize: 15, color: 'var(--muted)' }}>No reviews yet — be the first to write one after a show.</p>
                 </div>
-              ) : sorted.map((show, idx) => <ListRow key={show.id} show={show} idx={idx} />)}
+              ) : sorted.map((show, idx) => <ListRow key={show.id} show={show} idx={idx} topReviews={topReviews} />)}
             </main>
           </div>
         </div>
@@ -240,7 +243,7 @@ export default function ReviewsPage() {
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--text)', marginBottom: 4 }}>Reviews</h2>
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
             {FILTERS.map(f => <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, padding: '6px 14px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>{f}</button>)}
-            <Link href="/search?q=all" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
+            <Link href="/search?q=&filter=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
           </div>
 
           {loading ? (
