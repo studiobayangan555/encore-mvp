@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
 
 interface SessionCtx {
@@ -17,38 +17,59 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null)
   const [profileName, setProfileName] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const initialized = useRef(false)
 
   useEffect(() => {
-    // Use a single stable reference — do not recreate inside callbacks
-    const supabase = createClient()
-    let mounted = true
+    // Only initialize once — prevents re-fetching on navigation
+    if (initialized.current) return
+    initialized.current = true
 
+    const supabase = createClient()
+
+    // Get initial session from localStorage (fast, no network)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        const { data } = await supabase
-          .from('profiles').select('display_name').eq('id', session.user.id).single()
-        if (data?.display_name) setProfileName(data.display_name)
+        const name = session.user.user_metadata?.full_name 
+          || session.user.email?.split('@')[0] 
+          || null
+        setProfileName(name)
+        // Try to get display_name from profiles table
+        supabase.from('profiles')
+          .select('display_name')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data }) => {
+            if (data?.display_name) setProfileName(data.display_name)
+          })
       }
       setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    // Listen for auth changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        const { data } = await supabase
-          .from('profiles').select('display_name').eq('id', session.user.id).single()
-        setProfileName(data?.display_name ?? null)
+        const name = session.user.user_metadata?.full_name
+          || session.user.email?.split('@')[0]
+          || null
+        setProfileName(name)
+        if (event === 'SIGNED_IN') {
+          supabase.from('profiles')
+            .select('display_name')
+            .eq('id', session.user.id)
+            .single()
+            .then(({ data }) => {
+              if (data?.display_name) setProfileName(data.display_name)
+            })
+        }
       } else {
         setProfileName(null)
       }
       setLoading(false)
     })
 
-    return () => {
-      mounted = false
-      subscription.unsubscribe()
-    }
+    return () => subscription.unsubscribe()
   }, [])
 
   return <Ctx.Provider value={{ user, profileName, loading }}>{children}</Ctx.Provider>

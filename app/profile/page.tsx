@@ -83,12 +83,10 @@ export default function ProfilePage() {
       clearTimeout(timeout)
       
       if (!user) {
-        console.log('[profile] no user found, redirecting to login')
-        router.push('/auth/login')
+          router.push('/auth/login')
         return
       }
       
-      console.log('[profile] user found:', user.email)
 
       // Build fallback profile immediately so page never hangs
       const fallback = {
@@ -122,7 +120,6 @@ export default function ProfilePage() {
       if (saved) setSavedShows(saved as any)
 
     } catch (e) {
-      console.error('[profile] load error:', e)
       clearTimeout(timeout)
       setLoading(false)
     }
