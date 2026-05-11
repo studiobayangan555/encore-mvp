@@ -113,7 +113,7 @@ export default function ReviewsPage() {
   }), [shows, activeFilter])
 
 
-  const skeleton = (  const skeleton = (
+  const skeleton = (
     <div>
       {[1,2,3].map(i => (
         <div key={i} style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface)', overflow: 'hidden', marginBottom: 10, height: 110 }}>
