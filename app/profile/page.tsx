@@ -60,11 +60,15 @@ export default function ProfilePage() {
   async function loadProfile() {
     const supabase = createClient()
     try {
-      // Use getUser() — works with new Supabase key format
+      // Check session first, then getUser
       let user: any = null
-      const { data: userData, error: userError } = await supabase.auth.getUser()
-      user = userData?.user || null
-      console.log('[profile] getUser result:', user?.email, userError?.message)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        user = session.user
+      } else {
+        const { data: { user: u } } = await supabase.auth.getUser()
+        user = u
+      }
 
       if (!user) {
         router.push('/auth/login')
