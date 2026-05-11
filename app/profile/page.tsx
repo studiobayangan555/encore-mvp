@@ -59,21 +59,39 @@ export default function ProfilePage() {
 
   async function loadProfile() {
     const supabase = createClient()
+    
+    // Hard timeout — never hang more than 8 seconds
+    const timeout = setTimeout(() => {
+      console.log('[profile] timeout reached')
+      setLoading(false)
+    }, 8000)
+    
     try {
-      // Check session first, then getUser
+      // Try getUser first — most reliable with new Supabase keys
       let user: any = null
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        user = session.user
-      } else {
-        const { data: { user: u } } = await supabase.auth.getUser()
+      console.log('[profile] trying getUser...')
+      
+      const { data: { user: u }, error: userErr } = await supabase.auth.getUser()
+      console.log('[profile] getUser:', u?.email, userErr?.message)
+      
+      if (u) {
         user = u
+      } else {
+        // Fall back to getSession
+        const { data: { session }, error: sessErr } = await supabase.auth.getSession()
+        console.log('[profile] getSession:', session?.user?.email, sessErr?.message)
+        user = session?.user || null
       }
 
+      clearTimeout(timeout)
+      
       if (!user) {
+        console.log('[profile] no user found, redirecting to login')
         router.push('/auth/login')
         return
       }
+      
+      console.log('[profile] user found:', user.email)
 
       // Build fallback profile immediately so page never hangs
       const fallback = {
@@ -107,8 +125,9 @@ export default function ProfilePage() {
       if (saved) setSavedShows(saved as any)
 
     } catch (e) {
-      console.error('Profile load error:', e)
-      setLoading(false) // Always unblock the page
+      console.error('[profile] load error:', e)
+      clearTimeout(timeout)
+      setLoading(false)
     }
   }
 
