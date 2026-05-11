@@ -69,18 +69,15 @@ export default function ProfilePage() {
     try {
       // Try getUser first — most reliable with new Supabase keys
       let user: any = null
-      console.log('[profile] trying getUser...')
       
-      const { data: { user: u }, error: userErr } = await supabase.auth.getUser()
-      console.log('[profile] getUser:', u?.email, userErr?.message)
+      // getSession is fast and local — doesn't make network requests
+      const { data: { session } } = await supabase.auth.getSession()
+      user = session?.user || null
       
-      if (u) {
-        user = u
-      } else {
-        // Fall back to getSession
-        const { data: { session }, error: sessErr } = await supabase.auth.getSession()
-        console.log('[profile] getSession:', session?.user?.email, sessErr?.message)
-        user = session?.user || null
+      if (!user) {
+        // Only if no local session, try network call
+        const { data: { user: u } } = await supabase.auth.getUser()
+        user = u || null
       }
 
       clearTimeout(timeout)

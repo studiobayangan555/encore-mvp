@@ -19,7 +19,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Use a single stable reference — do not recreate inside callbacks
     const supabase = createClient()
+    let mounted = true
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -43,7 +45,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   return <Ctx.Provider value={{ user, profileName, loading }}>{children}</Ctx.Provider>
