@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, Breadcrumb, Stars, PhotoUpload, S, ArrowLeft, CheckIcon } from '@/components'
-import { SHOWS } from '@/lib/data'
+import { getShowById, type Show } from '@/lib/queries'
 import { createClient } from '@/lib/supabase'
 
 const CATEGORIES = ['Sound', 'Visuals', 'Setlist', 'Crowd', 'Event Management']
@@ -21,7 +21,8 @@ function StarInput({ value, onChange, size = 32 }: { value: number; onChange: (v
 
 export default function WriteReviewPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const show = SHOWS.find(s => s.id === params.id) || SHOWS[0]
+  const [show, setShow] = useState<Show | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [rating, setRating] = useState(0)
   const [headline, setHeadline] = useState('')
   const [body, setBody] = useState('')
@@ -31,6 +32,40 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
   const [photos, setPhotos] = useState<string[]>([])
   const [headlineError, setHeadlineError] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    async function init() {
+      // Check auth FIRST before showing anything
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.replace(`/auth/login?next=/events/${params.id}/review`)
+        return
+      }
+      // Load the correct show by ID
+      const s = await getShowById(params.id)
+      if (!s || !s.is_past) {
+        router.replace(`/events/${params.id}`)
+        return
+      }
+      setShow(s)
+      setAuthChecked(true)
+    }
+    init()
+  }, [params.id])
+
+  // Don't render anything until auth is confirmed and show is loaded
+  if (!authChecked || !show) {
+    return (
+      <>
+        <div className="hidden lg:block"><TopNav /></div>
+        <div className="lg:hidden"><MobileHeader /></div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
+          <p style={{ fontSize: 15, color: 'var(--muted)' }}>Loading…</p>
+        </div>
+      </>
+    )
+  }
 
   async function handleSubmit() {
     if (!headline.trim()) { setHeadlineError(true); return }
