@@ -241,9 +241,12 @@ export async function searchShows(query: string, country?: string): Promise<Show
     .from('shows')
     .select('*')
     .eq('is_published', true)
-    .or(`artist.ilike.%${query}%,venue.ilike.%${query}%,city.ilike.%${query}%,genre.ilike.%${query}%,promoter.ilike.%${query}%`)
+  // Only filter if query is not empty
+  if (query) {
+    q = q.or(`artist.ilike.%${query}%,venue.ilike.%${query}%,city.ilike.%${query}%,genre.ilike.%${query}%,promoter.ilike.%${query}%`)
+  }
   if (country && country !== 'All') q = q.eq('country', country)
-  const { data, error } = await q.order('date', { ascending: false }).limit(20)
+  const { data, error } = await q.order('date', { ascending: false }).limit(50)
   if (error) return []
   const today = new Date().toISOString().split('T')[0]
   return (data || []).map(s => ({ ...s, is_past: s.date < today }))
@@ -251,13 +254,14 @@ export async function searchShows(query: string, country?: string): Promise<Show
 
 export async function searchBlogPosts(query: string): Promise<BlogPost[]> {
   const supabase = createDataClient()
-  const { data, error } = await supabase
+  let q = supabase
     .from('blog_posts')
     .select('*')
     .eq('is_published', true)
-    .or(`title.ilike.%${query}%,category.ilike.%${query}%,author.ilike.%${query}%,deck.ilike.%${query}%`)
-    .order('published_at', { ascending: false })
-    .limit(10)
+  if (query) {
+    q = q.or(`title.ilike.%${query}%,category.ilike.%${query}%,author.ilike.%${query}%,deck.ilike.%${query}%`)
+  }
+  const { data, error } = await q.order('published_at', { ascending: false }).limit(20)
   if (error) return []
   return data || []
 }

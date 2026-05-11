@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, Breadcrumb, EventBadge, Sidebar, SidebarLabel, SidebarLink, AdSpot, ShowPoster, S } from '@/components'
 import { getShowsWithReviews, getReviewsByShow, type Show, type Review } from '@/lib/queries'
@@ -61,12 +61,11 @@ export default function ReviewsPage() {
     load()
   }, [])
 
-  const sorted = [...shows].sort((a, b) => {
+  const sorted = useMemo(() => [...shows].sort((a, b) => {
     if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
     if (activeFilter === 'Trending') return (b.going_count || 0) - (a.going_count || 0)
-    // Latest = most recently occurred (newest date first)
     return new Date(b.date).getTime() - new Date(a.date).getTime()
-  })
+  }), [shows, activeFilter])
 
   function ListRow({ show, idx }: { show: Show; idx: number }) {
     const topReview = topReviews[show.id]
@@ -195,7 +194,7 @@ export default function ReviewsPage() {
                     <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, fontWeight: 500, padding: '7px 16px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', transition: 'all .15s' }}>{f}</button>
                   ))}
                 </div>
-                <Link href="/search?type=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px' }}>All Reviews →</Link>
+                <Link href="/search?q=all" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px' }}>All Reviews →</Link>
               </div>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 14 }}>
                 {loading ? 'Loading…' : error ? 'Error loading data' : `${sorted.length} shows with reviews`}
@@ -241,7 +240,7 @@ export default function ReviewsPage() {
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--text)', marginBottom: 4 }}>Reviews</h2>
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
             {FILTERS.map(f => <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, padding: '6px 14px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>{f}</button>)}
-            <Link href="/search?type=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
+            <Link href="/search?q=all" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
           </div>
 
           {loading ? (

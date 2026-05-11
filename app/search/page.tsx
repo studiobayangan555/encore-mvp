@@ -20,8 +20,10 @@ function SearchResults() {
 
   useEffect(() => {
     if (!query) { setMatchedShows([]); setMatchedPosts([]); return }
-    searchShows(query).then(setMatchedShows)
-    searchBlogPosts(query).then(setMatchedPosts)
+    // 'all' is a special keyword meaning show everything
+    const searchTerm = query === 'all' ? '' : query
+    searchShows(searchTerm).then(setMatchedShows)
+    searchBlogPosts(searchTerm).then(setMatchedPosts)
   }, [query])
 
   const totalResults = matchedShows.length + matchedReviews.length + matchedPosts.length
@@ -60,7 +62,9 @@ function SearchResults() {
       <div style={{ ...S.pageHeader, marginBottom: 0 }}>
         <span style={S.pageLabel}>Search</span>
         <h1 style={{ ...S.pageTitle, fontSize: 32 }}>
-          {query ? (
+          {query === 'all' ? (
+            <>All Reviews & Shows</>
+          ) : query ? (
             <>{totalResults} result{totalResults !== 1 ? 's' : ''} for <span style={{ color: 'var(--accent)' }}>"{query}"</span></>
           ) : 'Search'}
         </h1>
@@ -80,7 +84,7 @@ function SearchResults() {
       )}
 
       {/* No results */}
-      {query && totalResults === 0 && (
+      {query && query !== 'all' && totalResults === 0 && (
         <div style={{ textAlign: 'center' as const, padding: '60px 0' }}>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 18, color: 'var(--text)', marginBottom: 10 }}>No results found</p>
           <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 32 }}>Try a different artist name, venue, or city.</p>
