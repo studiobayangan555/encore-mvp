@@ -195,6 +195,11 @@ export function TopNav() {
     { label: 'Upcoming Shows', href: '/events' },
     { label: 'Blog', href: '/blog' },
   ]
+  // More precise active check — /events/[id]/review shouldn't highlight Upcoming Shows
+  function isActive(href: string) {
+    if (href === '/events') return pathname === '/events' || (pathname.startsWith('/events/') && !pathname.includes('/review'))
+    return pathname.startsWith(href)
+  }
   const isHome = pathname === '/' || pathname === '/reviews'
   const [country, setCountry] = useState('All')
   const [navQuery, setNavQuery] = useState('')
@@ -210,7 +215,7 @@ export function TopNav() {
       <Logo size={20} />
       <div style={{ display: 'flex', gap: 2, marginLeft: 24 }}>
         {links.map(l => (
-          <Link key={l.href} href={l.href} style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 14, color: pathname.startsWith(l.href) ? 'var(--text)' : 'var(--muted)', textDecoration: 'none', padding: '7px 14px', borderRadius: 8, background: pathname.startsWith(l.href) ? 'var(--surface2)' : 'transparent', transition: 'all 0.15s', whiteSpace: 'nowrap' as const }}>{l.label}</Link>
+          <Link key={l.href} href={l.href} style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 14, color: isActive(l.href) ? 'var(--text)' : 'var(--muted)', textDecoration: 'none', padding: '7px 14px', borderRadius: 8, background: isActive(l.href) ? 'var(--surface2)' : 'transparent', transition: 'all 0.15s', whiteSpace: 'nowrap' as const }}>{l.label}</Link>
         ))}
       </div>
 
