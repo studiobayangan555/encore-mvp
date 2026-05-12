@@ -697,13 +697,44 @@ export function SidebarLink({ children, active }: { children: React.ReactNode; a
   return <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: active ? 'var(--text)' : 'var(--muted)', fontWeight: active ? 600 : 400, padding: '8px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>{children}</div>
 }
 
-export function AdSpot() {
+export function AdSpot({ placement = 'sidebar' }: { placement?: string }) {
+  const [ad, setAd] = useState<{ id: string; image_url: string; link_url: string; title: string } | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.from('ads')
+      .select('id, image_url, link_url, title')
+      .eq('placement', placement)
+      .eq('is_active', true)
+      .limit(1)
+      .single()
+      .then(({ data }) => { if (data) setAd(data) })
+  }, [placement])
+
+  async function handleClick() {
+    if (!ad) return
+    // Track click — fire and forget
+    const supabase = createClient()
+    await supabase.from('ads').update({ clicks: ad ? undefined : 0 }).eq('id', ad.id)
+    // Use rpc for atomic increment
+    supabase.rpc('increment_ad_clicks', { ad_id: ad.id }).catch(() => {
+      // Fallback: just navigate
+    })
+  }
+
+  if (!ad) {
+    return (
+      <div style={{ width: '100%', height: 200, background: 'var(--surface2)', border: '1px dashed var(--border)', borderRadius: 'var(--radius)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 28 }}>
+        <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--muted)' }}>Advertisement</p>
+        <p style={{ fontSize: 12, color: 'var(--muted)', opacity: 0.5 }}>240 × 200 px</p>
+      </div>
+    )
+  }
+
   return (
-    <div style={{ width: '100%', height: 200, background: 'var(--surface2)', border: '1px dashed var(--border)', borderRadius: 'var(--radius)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 28 }}>
-      <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: 'var(--muted)' }}>Advertisement</p>
-      <p style={{ fontSize: 12, color: 'var(--muted)', opacity: 0.6 }}>240 × 200 px</p>
-      <span style={{ fontSize: 10, color: 'var(--accent)', background: 'rgba(var(--accent-rgb),0.08)', border: '1px solid rgba(var(--accent-rgb),0.2)', padding: '2px 8px', borderRadius: 100 }}>Toggleable via admin</span>
-    </div>
+    <a href={ad.link_url} target="_blank" rel="noopener" onClick={handleClick} style={{ display: 'block', width: '100%', marginBottom: 28, borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border)', textDecoration: 'none' }}>
+      <img src={ad.image_url} alt={ad.title || 'Advertisement'} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
+    </a>
   )
 }
 

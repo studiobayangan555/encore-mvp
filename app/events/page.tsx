@@ -18,6 +18,7 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true)
   const [sort, setSort] = useState<Sort>('soonest')
   const [search, setSearch] = useState('')
+  const [genreFilter, setGenreFilter] = useState('')
 
   useEffect(() => {
     getUpcomingShows().then(data => { setShows(data); setLoading(false) })
@@ -28,6 +29,7 @@ export default function EventsPage() {
 
   const filtered = useMemo(() => {
     let list = shows.slice(1)
+    if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
     if (search) list = list.filter(s =>
       s.artist.toLowerCase().includes(search.toLowerCase()) ||
       s.venue.toLowerCase().includes(search.toLowerCase()) ||
@@ -42,7 +44,7 @@ export default function EventsPage() {
     if (sort === 'trending') list = [...list].sort((a, b) => b.going_count - a.going_count)
     if (sort === 'latest') list = [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     return list
-  }, [shows, sort, search])
+  }, [shows, sort, search, genreFilter])
 
   const SORTS: { key: Sort; label: string }[] = [
     { key: 'soonest', label: 'Soonest' }, { key: 'latest', label: 'Latest' },
@@ -87,25 +89,9 @@ export default function EventsPage() {
           <div style={S.twoCol}>
             <Sidebar>
               <AdSpot />
-              <SidebarLabel>Country</SidebarLabel>
-              {SEA_COUNTRIES.map(c => (
-                <label key={c.code} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)', padding: '6px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--accent)' }} />{c.label}
-                </label>
-              ))}
-              <SidebarLabel>Event Type</SidebarLabel>
-              {['Gig', 'Concert', 'Festival', 'Multi-night'].map(t => (
-                <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)', padding: '6px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--accent)' }} />{t}
-                </label>
-              ))}
               <SidebarLabel>Genre</SidebarLabel>
-              {GENRES.map((g, i) => <SidebarLink key={g} active={i === 0}>{g}</SidebarLink>)}
-              <SidebarLabel>Price Range</SidebarLabel>
-              {['Free', 'Under RM200', 'RM200–500', 'RM500+'].map((p, i) => (
-                <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)', padding: '6px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-                  <input type="checkbox" defaultChecked={i > 0 && i < 3} style={{ accentColor: 'var(--accent)' }} />{p}
-                </label>
+              {GENRES.map((g) => (
+                <div key={g} onClick={() => setGenreFilter(g === 'All genres' ? '' : g)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: (genreFilter === '' && g === 'All genres') || genreFilter === g ? 'var(--text)' : 'var(--muted)', fontWeight: (genreFilter === '' && g === 'All genres') || genreFilter === g ? 600 : 400, padding: '8px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer', transition: 'color .15s' }}>{g}</div>
               ))}
             </Sidebar>
 

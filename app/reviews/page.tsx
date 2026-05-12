@@ -83,6 +83,8 @@ export default function ReviewsPage() {
   const [topReviews, setTopReviews] = useState<Record<string, Review>>({})
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('Latest')
+  const [ratingFilter, setRatingFilter] = useState(0)
+  const [genreFilter, setGenreFilter] = useState('')
 
   const [error, setError] = useState<string | null>(null)
 
@@ -106,11 +108,19 @@ export default function ReviewsPage() {
     load()
   }, [])
 
-  const sorted = useMemo(() => [...shows].sort((a, b) => {
-    if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
-    if (activeFilter === 'Trending') return (b.going_count || 0) - (a.going_count || 0)
-    return new Date(b.date).getTime() - new Date(a.date).getTime()
-  }), [shows, activeFilter])
+  const sorted = useMemo(() => {
+    let list = [...shows]
+    // Apply rating filter
+    if (ratingFilter > 0) list = list.filter(s => s.avg_rating >= ratingFilter)
+    // Apply genre filter
+    if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
+    // Apply sort
+    return list.sort((a, b) => {
+      if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
+      if (activeFilter === 'Trending') return (b.going_count || 0) - (a.going_count || 0)
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
+  }, [shows, activeFilter, ratingFilter, genreFilter])
 
 
   const skeleton = (
@@ -172,22 +182,14 @@ export default function ReviewsPage() {
           <div style={S.twoCol}>
             <Sidebar>
               <AdSpot />
-              <SidebarLabel>Country</SidebarLabel>
-              {SEA_COUNTRIES.map(c => (
-                <label key={c.code} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)', padding: '6px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--accent)' }} />{c.label}
-                </label>
-              ))}
-              <SidebarLabel>Event Type</SidebarLabel>
-              {['Gig', 'Concert', 'Festival', 'Multi-night'].map(t => (
-                <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)', padding: '6px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--accent)' }} />{t}
-                </label>
-              ))}
               <SidebarLabel>Rating</SidebarLabel>
-              {['All ratings', '★★★★★ only', '★★★★ and above', '★★★ and above'].map((r, i) => <SidebarLink key={r} active={i === 0}>{r}</SidebarLink>)}
+              {[{label:'All ratings',min:0},{label:'★★★★★ only',min:5},{label:'★★★★ and above',min:4},{label:'★★★ and above',min:3}].map((r,i) => (
+                <div key={r.label} onClick={() => setRatingFilter(r.min)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: ratingFilter === r.min ? 'var(--text)' : 'var(--muted)', fontWeight: ratingFilter === r.min ? 600 : 400, padding: '8px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer', transition: 'color .15s' }}>{r.label}</div>
+              ))}
               <SidebarLabel>Genre</SidebarLabel>
-              {GENRES.map((g, i) => <SidebarLink key={g} active={i === 0}>{g}</SidebarLink>)}
+              {GENRES.map((g) => (
+                <div key={g} onClick={() => setGenreFilter(g === 'All genres' ? '' : g)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: (genreFilter === '' && g === 'All genres') || genreFilter === g ? 'var(--text)' : 'var(--muted)', fontWeight: (genreFilter === '' && g === 'All genres') || genreFilter === g ? 600 : 400, padding: '8px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer', transition: 'color .15s' }}>{g}</div>
+              ))}
             </Sidebar>
 
             <main>
@@ -200,7 +202,7 @@ export default function ReviewsPage() {
                 <Link href="/search?q=&filter=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px' }}>All Reviews →</Link>
               </div>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 14 }}>
-                {loading ? 'Loading…' : error ? 'Error loading data' : `${sorted.length} shows with reviews`}
+                {loading ? 'Loading…' : error ? 'Error loading data' : `${sorted.length} shows · sorted by ${activeFilter.toLowerCase()}`}
               </p>
               {loading ? skeleton : error ? (
                 <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 24, textAlign: 'center' as const }}>
