@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, Breadcrumb, EventBadge, Sidebar, SidebarLabel, SidebarLink, AdSpot, ShowPoster, S } from '@/components'
 import { getShowsWithReviews, getReviewsByShow, type Show, type Review } from '@/lib/queries'
@@ -108,18 +108,18 @@ export default function ReviewsPage() {
     load()
   }, [])
 
-  const [sorted, setSorted] = useState<Show[]>([])
-  
-  useEffect(() => {
+  const sorted = useMemo(() => {
     let list = [...shows]
+    // Apply rating filter
     if (ratingFilter > 0) list = list.filter(s => s.avg_rating >= ratingFilter)
+    // Apply genre filter
     if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
-    const result = list.sort((a, b) => {
+    // Apply sort
+    return list.sort((a, b) => {
       if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
       if (activeFilter === 'Trending') return (b.going_count || 0) - (a.going_count || 0)
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
-    setSorted([...result])
   }, [shows, activeFilter, ratingFilter, genreFilter])
 
 
@@ -204,7 +204,6 @@ export default function ReviewsPage() {
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 14 }}>
                 {loading ? 'Loading…' : error ? 'Error loading data' : `${sorted.length} shows · sorted by ${activeFilter.toLowerCase()}`}
               </p>
-              <div key={activeFilter}>
               {loading ? skeleton : error ? (
                 <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 24, textAlign: 'center' as const }}>
                   <p style={{ fontSize: 14, color: 'var(--accent-red)', marginBottom: 8 }}>Could not load reviews</p>
@@ -215,7 +214,6 @@ export default function ReviewsPage() {
                   <p style={{ fontSize: 15, color: 'var(--muted)' }}>No reviews yet — be the first to write one after a show.</p>
                 </div>
               ) : sorted.map((show, idx) => <ListRow key={show.id} show={show} idx={idx} topReviews={topReviews} />)}
-              </div>
             </main>
           </div>
         </div>

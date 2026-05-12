@@ -140,7 +140,7 @@ export default function EventsPage() {
                 {SORTS.map(s => (
                   <button key={s.key} onClick={() => setSort(s.key)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, fontWeight: 500, padding: '7px 16px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: sort === s.key ? 'var(--accent)' : 'var(--surface2)', color: sort === s.key ? 'var(--bg)' : 'var(--muted)', transition: 'all .15s' }}>{s.label}</button>
                 ))}
-
+                <Link href="/search?q=&filter=upcoming" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', textDecoration: 'none', border: '1px solid var(--border)', borderRadius: 100, padding: '7px 16px', marginLeft: 'auto' }}>All Upcoming →</Link>
               </div>
 
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 4 }}>
