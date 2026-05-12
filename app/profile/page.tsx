@@ -47,8 +47,9 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [reviews, setReviews] = useState<DBReview[]>([])
   const [savedShows, setSavedShows] = useState<SavedShow[]>([])
+  const [goingShows, setGoingShows] = useState<SavedShow[]>([])
   const [showSettings, setShowSettings] = useState(false)
-  const [activeTab, setActiveTab] = useState<'reviews' | 'saved'>('reviews')
+  const [activeTab, setActiveTab] = useState<'reviews' | 'going' | 'saved'>('reviews')
   const [loading, setLoading] = useState(true)
   const [settingsForm, setSettingsForm] = useState({ display_name: '', countries: [] as string[] })
   const [saving, setSaving] = useState(false)
@@ -115,9 +116,12 @@ export default function ProfilePage() {
       if (revs) setReviews(revs as any)
 
       const { data: saved } = await supabase
-        .from('saved_shows').select('saved_at, shows(id, artist, venue, city, date_display, price, country)')
+        .from('saved_shows').select('saved_at, status, shows(id, artist, venue, city, date_display, price, country)')
         .eq('user_id', user.id).order('saved_at', { ascending: false })
-      if (saved) setSavedShows(saved as any)
+      if (saved) {
+        setSavedShows((saved as any).filter((s: any) => s.status !== 'going'))
+        setGoingShows((saved as any).filter((s: any) => s.status === 'going'))
+      }
 
     } catch (e) {
       clearTimeout(timeout)
@@ -167,6 +171,7 @@ export default function ProfilePage() {
   const initials = displayName.slice(0, 2).toUpperCase()
   const tabs = [
     { key: 'reviews' as const, label: 'My Reviews', count: reviews.length },
+    { key: 'going' as const, label: 'Going', count: goingShows.length },
     { key: 'saved' as const, label: 'Saved Shows', count: savedShows.length },
   ]
 

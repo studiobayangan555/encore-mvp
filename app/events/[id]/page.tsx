@@ -19,6 +19,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'reviews' | 'overview' | 'comments'>('reviews')
   const [saved, setSaved] = useState(false)
+  const [going, setGoing] = useState(false)
   const [savingLoading, setSavingLoading] = useState(false)
   const url = typeof window !== 'undefined' ? window.location.href : ''
 
@@ -28,6 +29,22 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       if (!s) { router.push('/events'); return }
       setShow(s)
       setActiveTab(s.is_past ? 'reviews' : 'overview')
+
+      // Check if user is going or saved this show
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        const { data: savedData } = await supabase
+          .from('saved_shows')
+          .select('status')
+          .eq('user_id', session.user.id)
+          .eq('show_id', s.id)
+          .single()
+        if (savedData) {
+          if (savedData.status === 'going') setGoing(true)
+          else setSaved(true)
+        }
+      }
 
       const [revs, cmts, promo, trending] = await Promise.all([
         getReviewsByShow(s.id),
@@ -43,6 +60,23 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     }
     load()
   }, [params.id])
+
+  async function toggleGoing() {
+    if (savingLoading || !show) return
+    setSavingLoading(true)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { window.location.href = '/auth/login'; return }
+    if (!going) {
+      await supabase.from('saved_shows').upsert({
+        user_id: user.id, show_id: show.id, status: 'going'
+      }, { onConflict: 'user_id,show_id' })
+    } else {
+      await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: show.id })
+    }
+    setGoing(!going)
+    setSavingLoading(false)
+  }
 
   async function toggleSave() {
     if (savingLoading || !show) return
@@ -149,7 +183,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <div style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' as const, gap: 12 }}>
             <p style={{ fontSize: 14, color: 'var(--muted)' }}>This is an upcoming show — reviews open when the event commences.</p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, padding: '10px 18px', borderRadius: 8, border: 'none', cursor: 'pointer' }}>Going</button>
+              <button onClick={toggleGoing} style={{ background: going ? 'rgba(var(--accent-rgb),0.15)' : 'var(--accent)', color: going ? 'var(--accent)' : 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, padding: '10px 18px', borderRadius: 8, border: going ? '1px solid var(--accent)' : 'none', cursor: 'pointer' }}>{going ? '✓ Going' : 'Going'}</button>
               <button onClick={toggleSave} style={{ background: 'transparent', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, padding: '10px 18px', borderRadius: 8, border: '1px solid var(--border)', cursor: 'pointer' }}>Interested / Save</button>
             </div>
           </div>
@@ -311,7 +345,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     <Link href={`/events/${show.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', display: 'block', marginBottom: 12 }}>Write A Review</Link>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
-                      <button style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: 'none', cursor: 'pointer' }}>Going</button>
+                      <button onClick={toggleGoing} style={{ background: going ? 'rgba(var(--accent-rgb),0.15)' : 'var(--accent)', color: going ? 'var(--accent)' : 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: going ? '1px solid var(--accent)' : 'none', cursor: 'pointer' }}>{going ? '✓ Going' : 'Going'}</button>
                       <button onClick={toggleSave} style={{ background: saved ? 'rgba(var(--accent-rgb),0.1)' : 'transparent', color: saved ? 'var(--accent)' : 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: `1px solid ${saved ? 'var(--accent)' : 'var(--border)'}`, cursor: 'pointer' }}>{saved ? '★ Saved' : 'Interested / Save'}</button>
                       <button style={{ background: 'transparent', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: '1px solid var(--border)', cursor: 'pointer' }}>Share</button>
                     </div>

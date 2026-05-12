@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, BlogImage, Breadcrumb, CategoryBadge, Avatar, Stars, ShareBar, CommentsSection, S, ArrowLeft } from '@/components'
+import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, BlogImage, AdSpot, Breadcrumb, CategoryBadge, Avatar, Stars, ShareBar, CommentsSection, S, ArrowLeft } from '@/components'
 import { BLOG_POSTS, SHOWS, COMMENTS } from '@/lib/data'
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -76,6 +76,7 @@ By the end, the crowd was fully surrendered. Not just singing along — fully go
                     </div>
                   </div>
                 </div>
+                <AdSpot />
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 12 }}>More posts</p>
                 {related.map(r => (
                   <Link key={r.id} href={`/blog/${r.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 10, marginBottom: 14 }}>
