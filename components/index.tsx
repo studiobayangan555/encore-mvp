@@ -543,7 +543,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       target_type: targetType,
       user_id: user.id,
       body: body.trim(),
-    }).select('*, profiles(display_name)').single()
+    }).select('id').single()
 
     if (error) {
       console.error('[comments] insert error:', error)
@@ -551,7 +551,8 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       return
     }
     if (data) {
-      const name = data.profiles?.display_name || user.email?.split('@')[0] || 'Fan'
+      const { data: prof } = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
+      const name = prof?.display_name || user.email?.split('@')[0] || 'Fan'
       setComments(prev => [{
         id: data.id, targetId, targetType: targetType as 'show' | 'post',
         author: name, initials: name.slice(0,2).toUpperCase(),
@@ -574,7 +575,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       user_id: user.id,
       parent_id: commentId,
       body: rb,
-    }).select('*, profiles(display_name)').single()
+    }).select('id').single()
 
     if (error) {
       console.error('[comments] reply error:', error)
@@ -582,6 +583,8 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       return
     }
     if (data) {
+      const { data: prof } = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
+      const name = prof?.display_name || user.email?.split('@')[0] || 'Fan'
       const profile = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
       const name = profile.data?.display_name || user.email?.split('@')[0] || 'Fan'
       setComments(prev => prev.map(c => c.id === commentId ? {
