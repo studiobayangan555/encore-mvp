@@ -245,7 +245,7 @@ export function TopNav() {
     if (href === '/events') return pathname === '/events' || (pathname.startsWith('/events/') && !pathname.includes('/review'))
     return pathname.startsWith(href)
   }
-  const isHome = pathname === '/' || pathname === '/reviews'
+  const isHome = pathname === '/'
   const [country, setCountry] = useState('All')
   const [navQuery, setNavQuery] = useState('')
 

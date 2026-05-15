@@ -173,11 +173,7 @@ export default function ReviewsPage() {
             </Sidebar>
 
             <main>
-              {/* Search bar */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 16px' }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search artist, venue, city…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: 'var(--text)', outline: 'none' }} />
-              </div>
+
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <div style={{ display: 'flex', gap: 6 }}>
                   {FILTERS.map(f => (
@@ -212,10 +208,7 @@ export default function ReviewsPage() {
         <MobileHeader />
         <div style={{ padding: '0 18px' }}>
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 12, paddingTop: 24, lineHeight: 1.2 }}>Reviews</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search artist, venue, city…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: 'var(--text)', outline: 'none' }} />
-          </div>
+
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
             {FILTERS.map(f => <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, padding: '6px 14px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>{f}</button>)}
             <Link href="/search?q=&filter=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
