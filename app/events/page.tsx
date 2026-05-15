@@ -161,64 +161,62 @@ export default function EventsPage() {
         <MobileHeader />
         <div style={{ padding: '0 18px' }}>
           <Breadcrumb crumbs={[{ label: 'Upcoming Shows' }]} />
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 12, lineHeight: 1.2 }}>Upcoming Shows</h1>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 16, lineHeight: 1.2 }}>Upcoming Shows</h1>
 
-          {/* Mobile featured */}
-          {!loading && featured && (
-            <Link href={`/events/${featured.id}`} style={{ textDecoration: 'none', display: 'block', borderRadius: 10, overflow: 'hidden', position: 'relative', height: 180, marginBottom: 16 }}>
-              <ShowPoster posterUrl={featured.poster_url} gradient='linear-gradient(135deg,#1a0033,#6600cc)' style={{ position: 'absolute', inset: 0 }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(8,10,15,.95),transparent 60%)', padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 20, color: 'white', lineHeight: 1, marginBottom: 4 }}>{featured.artist}</p>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>{featured.venue} · {featured.date_display}</p>
-                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--accent)' }}>{featured.price}</p>
-              </div>
-            </Link>
+          {/* 4-card hero grid — featured full width + 3 below */}
+          {!loading && shows.length > 0 && (
+            <div style={{ marginBottom: 20 }}>
+              {/* Featured — full width */}
+              {featured && (
+                <Link href={`/events/${featured.id}`} style={{ textDecoration: 'none', display: 'block', borderRadius: 10, overflow: 'hidden', position: 'relative', height: 200, marginBottom: 8 }}>
+                  <ShowPoster posterUrl={featured.poster_url} gradient='linear-gradient(135deg,#1a0033,#6600cc)' style={{ position: 'absolute', inset: 0 }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(8,10,15,.95),transparent 55%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                    <span style={{ fontSize: 10, background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, padding: '2px 8px', borderRadius: 100, alignSelf: 'flex-start', marginBottom: 6 }}>Featured</span>
+                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 20, color: 'white', lineHeight: 1.1, marginBottom: 3 }}>{featured.artist}</p>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', marginBottom: 3 }}>{featured.venue} · {featured.date_display}</p>
+                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--accent)' }}>{featured.price}</p>
+                  </div>
+                </Link>
+              )}
+              {/* 3 cards below featured */}
+              {shows.slice(1, 4).length > 0 && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                  {shows.slice(1, 4).map(show => (
+                    <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--surface)', display: 'block', color: 'inherit' }}>
+                      <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: 80 }} />
+                      <div style={{ padding: '8px 8px 10px' }}>
+                        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, color: 'var(--text)', lineHeight: 1.3, marginBottom: 2 }}>{show.artist}</p>
+                        <p style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3, lineHeight: 1.3 }}>{show.date_display}</p>
+                        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 9, color: 'var(--accent)' }}>{show.price}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
 
-          {/* Mobile sort tabs */}
+          {/* Sort tabs */}
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16, scrollbarWidth: 'none' as const }}>
             {SORTS.map(s => (
               <button key={s.key} onClick={() => setSort(s.key)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, padding: '6px 14px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: sort === s.key ? 'var(--accent)' : 'var(--surface2)', color: sort === s.key ? 'var(--bg)' : 'var(--muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>{s.label}</button>
             ))}
           </div>
 
+          {/* All shows list */}
           {loading ? (
             <p style={{ fontSize: 14, color: 'var(--muted)', padding: '20px 0' }}>Loading shows…</p>
-          ) : (
-            <>
-              {/* Next 3 — highlighted card grid */}
-              {filtered.slice(0, 3).length > 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 4 }}>
-                  {filtered.slice(0, 3).map((show, i) => (
-                    <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--surface)', gridColumn: i === 0 ? 'span 2' : 'span 1', display: 'block', color: 'inherit' }}>
-                      <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: i === 0 ? 140 : 100 }} />
-                      <div style={{ padding: '10px 12px' }}>
-                        <EventBadge type={show.type} />
-                        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--text)', lineHeight: 1.3, margin: '6px 0 2px' }}>{show.artist}</p>
-                        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 500, fontSize: 10, color: 'var(--muted)' }}>{show.date_display}</p>
-                        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', marginTop: 4 }}>{show.price}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-              {/* Rest — compact list */}
-              {filtered.slice(3).map(show => (
-                <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
-                  <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: 44, height: 44, borderRadius: 8, flexShrink: 0 }} />
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)', marginBottom: 2 }}>{show.artist}</p>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 500, fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{show.venue} · {show.date_display}</p>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <EventBadge type={show.type} />
-                      <span style={{ fontSize: 11, color: 'var(--muted)' }}>💬 {show.comment_count}</span>
-                    </div>
-                  </div>
-                  <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--accent)', whiteSpace: 'nowrap' as const }}>{show.price}</p>
-                </Link>
-              ))}
-            </>
-          )}
+          ) : filtered.map(show => (
+            <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
+              <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: 44, height: 44, borderRadius: 8, flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)', marginBottom: 2 }}>{show.artist}</p>
+                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 500, fontSize: 11, color: 'var(--muted)', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.venue} · {show.date_display}</p>
+                <EventBadge type={show.type} />
+              </div>
+              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', whiteSpace: 'nowrap' as const, flexShrink: 0, paddingLeft: 8 }}>{show.price}</p>
+            </Link>
+          ))}
           <MobileFooter />
         </div>
         <BottomNav />

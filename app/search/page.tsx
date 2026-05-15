@@ -109,19 +109,16 @@ function SearchResults() {
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Shows</p>
           )}
           {showShows.map(show => (
-            <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 16, alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
-              <div style={{ width: 52, height: 52, borderRadius: 10, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 14, color: 'rgba(255,255,255,.4)' }}>{show.artist.slice(0,2).toUpperCase()}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{show.artist}</p>
-                  <EventBadge type={show.type} />
-                </div>
-                <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show.venue}, {show.city} · {show.date_display}</p>
+            <Link key={show.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 12, alignItems: 'center', padding: '14px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 12, color: 'rgba(255,255,255,.4)' }}>{show.artist.slice(0,2).toUpperCase()}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.artist}</p>
+                <p style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.venue}, {show.city} · {show.date_display}</p>
+                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', marginTop: 3 }}>{show.price}</p>
               </div>
-              <div style={{ textAlign: 'right' as const, flexShrink: 0 }}>
-                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--accent)', marginBottom: 2 }}>{show.price}</p>
-                {show.review_count > 0 && <p style={{ fontSize: 12, color: 'var(--muted)' }}>{show.review_count} reviews</p>}
-              </div>
+              {show.review_count > 0 && (
+                <p style={{ fontSize: 11, color: 'var(--muted)', flexShrink: 0 }}>{show.review_count} reviews</p>
+              )}
             </Link>
           ))}
         </div>

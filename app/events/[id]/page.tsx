@@ -206,8 +206,22 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--text)', fontStyle: 'italic', marginBottom: 10 }}>"{r.headline}"</p>
               {r.body && <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7, marginBottom: 16 }}>{r.body}</p>}
               {r.photos && r.photos.length > 0 && (
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const, marginBottom: 14 }}>
-                  {r.photos.map((p, i) => <img key={i} src={p} alt="" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border)' }} />)}
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: r.photos.length === 1 ? '1fr' : r.photos.length === 2 ? '1fr 1fr' : '1fr 1fr 1fr', gap: 6, borderRadius: 10, overflow: 'hidden' }}>
+                    {r.photos.slice(0, 6).map((p: string, i: number) => (
+                      <a key={i} href={p} target="_blank" rel="noopener" title="View full size" style={{ display: 'block', aspectRatio: r.photos.length === 1 ? '16/9' : '1', overflow: 'hidden', position: 'relative', cursor: 'zoom-in' }}>
+                        <img src={p} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform .2s' }}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)'}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1)'}
+                        />
+                        {i === 5 && r.photos.length > 6 && (
+                          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 18, color: 'white' }}>+{r.photos.length - 6}</span>
+                          </div>
+                        )}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
               {(r.sound || r.visuals || r.setlist || r.crowd || r.event_management) && (

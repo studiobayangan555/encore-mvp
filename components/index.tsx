@@ -516,31 +516,51 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       .is('parent_id', null)
       .order('created_at', { ascending: false })
       .then(async ({ data }) => {
-        if (data && data.length > 0) {
-          // Fetch display names separately
-          const userIds = [...new Set(data.map((c: any) => c.user_id))]
-          const { data: profiles } = await supabase
-            .from('profiles')
-            .select('id, display_name')
-            .in('id', userIds)
-          const profileMap: Record<string, string> = {}
-          ;(profiles || []).forEach((p: any) => { profileMap[p.id] = p.display_name })
-          
-          setComments(data.map((c: any) => {
-            const name = profileMap[c.user_id] || 'Fan'
-            return {
-              id: c.id,
-              targetId,
-              targetType,
-              author: name,
-              initials: name.slice(0,2).toUpperCase(),
-              body: c.body,
-              date: new Date(c.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
-              likes: c.likes || 0,
-              replies: [],
-            }
-          }))
-        }
+        if (!data || data.length === 0) return
+
+        // Fetch all replies for these comments in one query
+        const commentIds = data.map((c: any) => c.id)
+        const { data: allReplies } = await supabase
+          .from('comments')
+          .select('id, user_id, parent_id, body, likes, created_at')
+          .in('parent_id', commentIds)
+          .order('created_at', { ascending: true })
+
+        // Fetch all display names in one query
+        const allUserIds = [...new Set([
+          ...data.map((c: any) => c.user_id),
+          ...(allReplies || []).map((r: any) => r.user_id)
+        ])]
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, display_name')
+          .in('id', allUserIds)
+        const profileMap: Record<string, string> = {}
+        ;(profiles || []).forEach((p: any) => { profileMap[p.id] = p.display_name })
+
+        const replyMap: Record<string, any[]> = {}
+        ;(allReplies || []).forEach((r: any) => {
+          if (!replyMap[r.parent_id]) replyMap[r.parent_id] = []
+          const name = profileMap[r.user_id] || 'Fan'
+          replyMap[r.parent_id].push({
+            id: r.id, targetId, targetType,
+            author: name, initials: name.slice(0,2).toUpperCase(),
+            body: r.body, date: new Date(r.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
+            likes: r.likes || 0, replies: [],
+          })
+        })
+
+        setComments(data.map((c: any) => {
+          const name = profileMap[c.user_id] || 'Fan'
+          return {
+            id: c.id, targetId, targetType,
+            author: name, initials: name.slice(0,2).toUpperCase(),
+            body: c.body,
+            date: new Date(c.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
+            likes: c.likes || 0,
+            replies: replyMap[c.id] || [],
+          }
+        }))
       })
   }, [targetId, targetType])
   const [body, setBody] = useState('')
