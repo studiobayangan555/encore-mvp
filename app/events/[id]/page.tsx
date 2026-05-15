@@ -170,7 +170,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   const TabBar = () => (
     <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: 28 }}>
-      {([['reviews', `Reviews (${show.review_count})`], ['overview', 'Overview'], ['comments', `Comments (${show.comment_count})`]] as const).map(([key, label]) => (
+      {([['reviews', `Reviews (${show.review_count})`], ['overview', 'Overview'], ['comments', `Comments (${comments.length})`]] as const).map(([key, label]) => (
         <button key={key} onClick={() => setActiveTab(key)} style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: activeTab === key ? 'var(--text)' : 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '13px 0', marginRight: 28, borderBottom: activeTab === key ? '2px solid var(--accent)' : '2px solid transparent', whiteSpace: 'nowrap' as const }}>{label}</button>
       ))}
     </div>

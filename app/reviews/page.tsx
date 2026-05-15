@@ -116,7 +116,7 @@ export default function ReviewsPage() {
   
   useEffect(() => {
     let list = [...shows]
-    if (ratingFilter > 0) list = list.filter(s => s.avg_rating >= ratingFilter)
+    if (ratingFilter > 0) list = list.filter(s => (s.avg_rating || 0) >= ratingFilter)
     if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
     const result = list.sort((a, b) => {
       if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
@@ -275,7 +275,7 @@ export default function ReviewsPage() {
                       <p style={{ fontSize: 11, color: 'var(--muted)' }}>{show.venue} · {show.date_display}</p>
                     </div>
                     <div style={{ textAlign: 'right' as const, flexShrink: 0 }}>
-                      <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 18, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating.toFixed(1)} ★</p>
+                      <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 18, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating > 0 ? `${show.avg_rating.toFixed(1)} ★` : '—'}</p>
                       <p style={{ fontSize: 10, color: 'var(--muted)' }}>{show.review_count} reviews</p>
                     </div>
                   </div>

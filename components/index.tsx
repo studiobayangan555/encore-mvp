@@ -500,6 +500,10 @@ export function ShareBar({ title, url }: { title: string; url: string }) {
 import { Comment } from '@/lib/data'
 
 export function CommentsSection({ targetId, targetType = 'show', initialComments }: { targetId: string; targetType?: string; initialComments: Comment[] }) {
+  const { user, profileName } = useSession()
+  const userInitials = profileName
+    ? profileName.slice(0,2).toUpperCase()
+    : user?.email?.slice(0,2).toUpperCase() || '?'
   const [comments, setComments] = useState<Comment[]>(initialComments)
 
   // Re-fetch comments from Supabase on mount
@@ -624,7 +628,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       {/* Write */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 18, marginBottom: 28 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <Avatar initials="YN" size={36} />
+          <Avatar initials={userInitials} size={36} />
           <div style={{ flex: 1 }}>
             <textarea value={body} onChange={e => { setBody(e.target.value); setBodyError(false) }} placeholder="Add to the conversation…" rows={3} style={{ ...inputBase, marginBottom: 10, borderColor: bodyError ? 'var(--accent-red)' : 'var(--border)' }} />
             {bodyError && <p style={{ fontSize: 12, color: 'var(--accent-red)', marginBottom: 8 }}>Comment cannot be empty</p>}
@@ -673,7 +677,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
           {/* Reply input */}
           {openReplies.includes(c.id) && (
             <div style={{ display: 'flex', gap: 10, padding: '12px 0 12px 50px' }}>
-              <Avatar initials="YN" size={28} />
+              <Avatar initials={userInitials} size={28} />
               <textarea value={replyBodies[c.id] || ''} onChange={e => setReplyBodies(prev => ({ ...prev, [c.id]: e.target.value }))} placeholder={`Reply to ${c.author}…`} rows={2} style={{ ...inputBase, flex: 1, height: 60 }} />
               <button onClick={() => submitReply(c.id)} style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 6, padding: '8px 14px', cursor: 'pointer', alignSelf: 'flex-end' }}>Reply</button>
             </div>
