@@ -502,28 +502,40 @@ import { Comment } from '@/lib/data'
 export function CommentsSection({ targetId, targetType = 'show', initialComments }: { targetId: string; targetType?: string; initialComments: Comment[] }) {
   const [comments, setComments] = useState<Comment[]>(initialComments)
 
-  // Re-fetch comments from Supabase on mount to ensure fresh data
+  // Re-fetch comments from Supabase on mount
   useEffect(() => {
     const supabase = createClient()
     supabase.from('comments')
-      .select('*, profiles(display_name)')
+      .select('id, user_id, body, likes, created_at')
       .eq('target_id', targetId)
       .eq('target_type', targetType)
       .is('parent_id', null)
       .order('created_at', { ascending: false })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         if (data && data.length > 0) {
-          setComments(data.map((c: any) => ({
-            id: c.id,
-            targetId: c.target_id,
-            targetType: c.target_type,
-            author: c.profiles?.display_name || 'Fan',
-            initials: (c.profiles?.display_name || 'FA').slice(0,2).toUpperCase(),
-            body: c.body,
-            date: new Date(c.created_at).toLocaleDateString(),
-            likes: c.likes || 0,
-            replies: [],
-          })))
+          // Fetch display names separately
+          const userIds = [...new Set(data.map((c: any) => c.user_id))]
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, display_name')
+            .in('id', userIds)
+          const profileMap: Record<string, string> = {}
+          ;(profiles || []).forEach((p: any) => { profileMap[p.id] = p.display_name })
+          
+          setComments(data.map((c: any) => {
+            const name = profileMap[c.user_id] || 'Fan'
+            return {
+              id: c.id,
+              targetId,
+              targetType,
+              author: name,
+              initials: name.slice(0,2).toUpperCase(),
+              body: c.body,
+              date: new Date(c.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
+              likes: c.likes || 0,
+              replies: [],
+            }
+          }))
         }
       })
   }, [targetId, targetType])

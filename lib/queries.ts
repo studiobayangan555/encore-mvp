@@ -189,7 +189,7 @@ export async function getCommentsByTarget(targetId: string, targetType: string):
   const supabase = createDataClient()
   const { data, error } = await supabase
     .from('comments')
-    .select('*, profiles(display_name)')
+    .select('id, target_id, target_type, user_id, parent_id, body, likes, created_at')
     .eq('target_id', targetId)
     .eq('target_type', targetType)
     .is('parent_id', null)
@@ -200,7 +200,7 @@ export async function getCommentsByTarget(targetId: string, targetType: string):
   const withReplies = await Promise.all((data || []).map(async comment => {
     const { data: replies } = await supabase
       .from('comments')
-      .select('*, profiles(display_name)')
+      .select('id, target_id, target_type, user_id, parent_id, body, likes, created_at')
       .eq('parent_id', comment.id)
       .order('created_at', { ascending: true })
     return { ...comment, replies: replies || [] }
