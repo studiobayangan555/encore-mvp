@@ -501,6 +501,32 @@ import { Comment } from '@/lib/data'
 
 export function CommentsSection({ targetId, targetType = 'show', initialComments }: { targetId: string; targetType?: string; initialComments: Comment[] }) {
   const [comments, setComments] = useState<Comment[]>(initialComments)
+
+  // Re-fetch comments from Supabase on mount to ensure fresh data
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.from('comments')
+      .select('*, profiles(display_name)')
+      .eq('target_id', targetId)
+      .eq('target_type', targetType)
+      .is('parent_id', null)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setComments(data.map((c: any) => ({
+            id: c.id,
+            targetId: c.target_id,
+            targetType: c.target_type,
+            author: c.profiles?.display_name || 'Fan',
+            initials: (c.profiles?.display_name || 'FA').slice(0,2).toUpperCase(),
+            body: c.body,
+            date: new Date(c.created_at).toLocaleDateString(),
+            likes: c.likes || 0,
+            replies: [],
+          })))
+        }
+      })
+  }, [targetId, targetType])
   const [body, setBody] = useState('')
   const [bodyError, setBodyError] = useState(false)
   const [openReplies, setOpenReplies] = useState<string[]>([])
@@ -517,11 +543,15 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       target_type: targetType,
       user_id: user.id,
       body: body.trim(),
-    }).select('id').single()
+    }).select('*, profiles(display_name)').single()
 
-    if (!error && data) {
-      const profile = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
-      const name = profile.data?.display_name || user.email?.split('@')[0] || 'Fan'
+    if (error) {
+      console.error('[comments] insert error:', error)
+      alert('Could not post comment — ' + error.message)
+      return
+    }
+    if (data) {
+      const name = data.profiles?.display_name || user.email?.split('@')[0] || 'Fan'
       setComments(prev => [{
         id: data.id, targetId, targetType: targetType as 'show' | 'post',
         author: name, initials: name.slice(0,2).toUpperCase(),
@@ -544,9 +574,14 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
       user_id: user.id,
       parent_id: commentId,
       body: rb,
-    }).select('id').single()
+    }).select('*, profiles(display_name)').single()
 
-    if (!error && data) {
+    if (error) {
+      console.error('[comments] reply error:', error)
+      alert('Could not post reply — ' + error.message)
+      return
+    }
+    if (data) {
       const profile = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
       const name = profile.data?.display_name || user.email?.split('@')[0] || 'Fan'
       setComments(prev => prev.map(c => c.id === commentId ? {

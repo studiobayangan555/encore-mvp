@@ -86,8 +86,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
       event_management: catRatings['Event Management'] || null,
       vibes,
       est_attendance: attendance ? parseInt(attendance) : null,
-      // photos uploaded to Supabase Storage then URLs stored here
-      photos: [],
+      photos: photos,
     })
 
     if (error) {
