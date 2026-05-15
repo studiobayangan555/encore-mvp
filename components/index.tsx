@@ -499,7 +499,7 @@ export function ShareBar({ title, url }: { title: string; url: string }) {
 // ─── COMMENTS ─────────────────────────────────────────────────
 import { Comment } from '@/lib/data'
 
-export function CommentsSection({ targetId, initialComments }: { targetId: string; initialComments: Comment[] }) {
+export function CommentsSection({ targetId, targetType = 'show', initialComments }: { targetId: string; targetType?: string; initialComments: Comment[] }) {
   const [comments, setComments] = useState<Comment[]>(initialComments)
   const [body, setBody] = useState('')
   const [bodyError, setBodyError] = useState(false)
