@@ -84,20 +84,16 @@ export interface BlogPost {
 export async function getShowsWithReviews(): Promise<Show[]> {
   const supabase = createDataClient()
   const today = new Date().toISOString().split('T')[0]
-  console.log('[encore] fetching shows with reviews, today =', today)
   const { data, error } = await supabase
     .from('shows')
     .select('*')
     .eq('is_published', true)
-  if (error) {
-    console.error('[encore] shows query error:', error)
-    return []
-  }
-  console.log('[encore] raw shows from supabase:', data?.length, data?.map(s => ({ artist: s.artist, date: s.date, review_count: s.review_count, is_published: s.is_published })))
-  // Filter past shows with reviews client-side to avoid date comparison issues
-  const past = (data || []).filter(s => s.date < today && s.review_count > 0)
-  console.log('[encore] past shows with reviews:', past.length)
-  return past.map(s => ({ ...s, is_past: true })).sort((a, b) => b.avg_rating - a.avg_rating)
+  if (error) { console.error(error); return [] }
+  // All past shows — including zero reviews — newest first
+  return (data || [])
+    .filter(s => s.date < today)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map(s => ({ ...s, is_past: true }))
 }
 
 export async function getUpcomingShows(): Promise<Show[]> {

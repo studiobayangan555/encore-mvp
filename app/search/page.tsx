@@ -12,7 +12,7 @@ function SearchResults() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
   const filter = searchParams.get('filter') || ''
-  const [activeTab, setActiveTab] = useState<ResultTab>(filter === 'reviews' || filter === 'upcoming' ? 'shows' : 'all')
+  const [activeTab, setActiveTab] = useState<ResultTab>(filter === 'reviews' ? 'shows' : 'all')
   const [showMore, setShowMore] = useState(false)
 
   const [matchedShows, setMatchedShows] = useState<Show[]>([])
@@ -23,14 +23,12 @@ function SearchResults() {
     const searchTerm = (query === '' || query === 'all') ? '' : query
     searchShows(searchTerm).then(data => {
       if (filter === 'reviews') {
-        setMatchedShows(data.filter(s => s.is_past && s.review_count > 0))
-      } else if (filter === 'upcoming') {
-        setMatchedShows(data.filter(s => !s.is_past))
+        setMatchedShows(data.filter(s => s.is_past))
       } else {
         setMatchedShows(data)
       }
     })
-    if (filter !== 'reviews' && filter !== 'upcoming') {
+    if (filter !== 'reviews') {
       searchBlogPosts(searchTerm).then(setMatchedPosts)
     }
   }, [query, filter])
@@ -73,8 +71,6 @@ function SearchResults() {
         <h1 style={{ ...S.pageTitle, fontSize: 32 }}>
           {filter === 'reviews' ? (
             <>All Reviews</>
-          ) : filter === 'upcoming' ? (
-            <>All Upcoming Shows</>
           ) : query ? (
             <>{totalResults} result{totalResults !== 1 ? 's' : ''} for <span style={{ color: 'var(--accent)' }}>"{query}"</span></>
           ) : 'Search'}

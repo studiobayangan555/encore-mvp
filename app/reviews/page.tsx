@@ -53,14 +53,18 @@ function ListRow({ show, idx, topReviews }: { show: Show; idx: number; topReview
             <p style={{ fontSize: 13, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{show.venue}, {show.city} · {show.date_display}</p>
           </div>
           <div style={{ textAlign: 'right' as const, flexShrink: 0 }}>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating.toFixed(1)} ★</p>
-            <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{show.review_count} reviews</p>
+            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating > 0 ? `${show.avg_rating.toFixed(1)} ★` : '—'}</p>
+            <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{show.review_count > 0 ? `${show.review_count} reviews` : 'No reviews yet'}</p>
           </div>
         </div>
-        {topReview && (
+        {topReview ? (
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, fontSize: 13, color: 'var(--muted)', fontStyle: 'italic', lineHeight: 1.5 }}>
             <span style={{ color: 'var(--text)', fontStyle: 'normal', fontWeight: 500 }}>"{topReview.headline}"</span>
             {' '}— {authorName} · <span style={{ color: 'var(--accent)', fontStyle: 'normal' }}>Read all {show.review_count} reviews →</span>
+          </div>
+        ) : (
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
+            No reviews yet — <a href={`/events/${show.id}/review`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>be the first →</a>
           </div>
         )}
       </div>
