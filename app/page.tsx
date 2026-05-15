@@ -177,10 +177,8 @@ export default function HomePage() {
             )
           })}
           <div style={{ textAlign: 'center' as const, marginTop: 24 }}>
-            <Link href="/reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 28px', textDecoration: 'none', display: 'inline-block', transition: 'all .15s' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
-            >View all reviews →</Link>
+            <Link href="/reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 10, padding: '14px 40px', textDecoration: 'none', display: 'inline-block', transition: 'opacity .15s' }}
+>View all reviews →</Link>
           </div>
         </section>
 
@@ -250,10 +248,8 @@ export default function HomePage() {
           ))}
 
           <div style={{ textAlign: 'center' as const, marginTop: 28 }}>
-            <Link href="/events" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 28px', textDecoration: 'none', display: 'inline-block', transition: 'all .15s' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
-            >View all upcoming shows →</Link>
+            <Link href="/events" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 10, padding: '14px 40px', textDecoration: 'none', display: 'inline-block', transition: 'opacity .15s' }}
+>View all upcoming shows →</Link>
           </div>
         </section>
 
@@ -343,7 +339,7 @@ export default function HomePage() {
             )
           })}
           <div style={{ textAlign: 'center' as const, marginTop: 20, marginBottom: 32 }}>
-            <Link href="/reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 24px', textDecoration: 'none', display: 'inline-block' }}>View all reviews →</Link>
+            <Link href="/reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '11px 28px', textDecoration: 'none', display: 'inline-block' }}>View all reviews →</Link>
           </div>
         </div>
 
@@ -387,7 +383,7 @@ export default function HomePage() {
             </Link>
           ))}
           <div style={{ textAlign: 'center' as const, marginTop: 20, marginBottom: 32 }}>
-            <Link href="/events" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 24px', textDecoration: 'none', display: 'inline-block' }}>View all upcoming shows →</Link>
+            <Link href="/events" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 8, padding: '11px 28px', textDecoration: 'none', display: 'inline-block' }}>View all upcoming shows →</Link>
           </div>
         </div>
 

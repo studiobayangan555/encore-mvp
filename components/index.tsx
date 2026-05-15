@@ -27,7 +27,7 @@ export function useTheme() {
 // ─── LOGO ─────────────────────────────────────────────────────
 export function Logo({ size = 20 }: { size?: number }) {
   return (
-    <Link href="/reviews" style={{ textDecoration: 'none' }}>
+    <Link href="/" style={{ textDecoration: 'none' }}>
       <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: size, color: 'var(--accent)', letterSpacing: 0, lineHeight: 1 }}>encore</span>
     </Link>
   )
@@ -401,7 +401,7 @@ export function MobileHeader() {
   return (
     <>
       <div style={{ position: 'sticky', top: 0, zIndex: 100, background: 'var(--nav-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '0 18px', height: 54, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-        <Link href="/reviews" style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--accent)', textDecoration: 'none', flexShrink: 0 }}>encore</Link>
+        <Link href="/" style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--accent)', textDecoration: 'none', flexShrink: 0 }}>encore</Link>
 
         {/* Right side — search icon circle + profile circle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
