@@ -89,6 +89,7 @@ export default function ReviewsPage() {
   const [activeFilter, setActiveFilter] = useState('Latest')
   const [ratingFilter, setRatingFilter] = useState(0)
   const [genreFilter, setGenreFilter] = useState('')
+  const [search, setSearch] = useState('')
 
   const [error, setError] = useState<string | null>(null)
 
@@ -118,13 +119,18 @@ export default function ReviewsPage() {
     let list = [...shows]
     if (ratingFilter > 0) list = list.filter(s => (s.avg_rating || 0) >= ratingFilter)
     if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
+    if (search) list = list.filter(s =>
+      s.artist.toLowerCase().includes(search.toLowerCase()) ||
+      s.venue.toLowerCase().includes(search.toLowerCase()) ||
+      s.city.toLowerCase().includes(search.toLowerCase())
+    )
     const result = list.sort((a, b) => {
       if (activeFilter === 'Popular') return (b.review_count || 0) - (a.review_count || 0)
       if (activeFilter === 'Trending') return (b.going_count || 0) - (a.going_count || 0)
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
     setSorted([...result])
-  }, [shows, activeFilter, ratingFilter, genreFilter])
+  }, [shows, activeFilter, ratingFilter, genreFilter, search])
 
 
   const skeleton = (
@@ -149,39 +155,9 @@ export default function ReviewsPage() {
         <div style={S.container}>
           <Breadcrumb crumbs={[{ label: 'Reviews' }]} />
 
-          {/* Hero search */}
-          <div style={{ background: 'linear-gradient(135deg,#0D0A1A 0%,#1a0033 40%,#080A0F 100%)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', padding: '52px 48px 44px', marginBottom: 36, textAlign: 'center' as const, position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)', width: 500, height: 500, background: 'radial-gradient(circle,rgba(123,97,255,.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
-            <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 16 }}>Southeast Asia's live music community</span>
-            <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 42, color: 'white', lineHeight: 1.1, letterSpacing: '-.02em', marginBottom: 10 }}>Every show deserves<br />to be <span style={{ color: 'var(--accent)' }}>remembered.</span></h1>
-            <p style={{ fontSize: 15, color: 'rgba(240,242,247,.55)', marginBottom: 36 }}>Real reviews from fans who were actually there.</p>
-            <form onSubmit={e => { e.preventDefault(); const q = (e.currentTarget.querySelector('input') as HTMLInputElement).value.trim(); if (q) window.location.href = `/search?q=${encodeURIComponent(q)}` }} style={{ maxWidth: 680, margin: '0 auto 24px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 12, overflow: 'hidden', height: 58, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '0 20px', height: '100%' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--muted)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input placeholder="Search artists, shows, venues…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 16, color: 'var(--text)', outline: 'none' }} />
-              </div>
-              <div style={{ width: 1, height: 28, background: 'var(--border)' }} />
-              <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px', height: '100%', minWidth: 150 }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--muted)', flexShrink: 0, marginRight: 8 }}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                <select style={{ background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: 'var(--text)', outline: 'none', cursor: 'pointer', width: '100%' }}>
-                  <option>All countries</option>
-                  {SEA_COUNTRIES.map(c => <option key={c.code}>{c.label}</option>)}
-                </select>
-              </div>
-              <button type="submit" style={{ height: '100%', padding: '0 28px', background: 'var(--accent)', border: 'none', cursor: 'pointer', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                Search
-              </button>
-            </form>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' as const }}>
-              {['Top rated', 'Trending in KL', 'K-pop', 'Festivals 2026', 'Singapore', 'Gigs'].map(tag => (
-                <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} style={{ fontSize: 12, color: 'var(--muted)', background: 'rgba(255,255,255,.04)', border: '1px solid var(--border)', padding: '5px 12px', borderRadius: 100, textDecoration: 'none' }}>{tag}</Link>
-              ))}
-            </div>
+          <div style={{ padding: '24px 0 8px' }}>
+            <h1 style={S.pageTitle}>Reviews</h1>
           </div>
-
-          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 6 }}>Reviews</h2>
-          <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 28 }}>Real reviews from real fans — every show, every night, across Southeast Asia.</p>
 
           <div style={S.twoCol}>
             <Sidebar>
@@ -197,6 +173,11 @@ export default function ReviewsPage() {
             </Sidebar>
 
             <main>
+              {/* Search bar */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 16px' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search artist, venue, city…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: 'var(--text)', outline: 'none' }} />
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <div style={{ display: 'flex', gap: 6 }}>
                   {FILTERS.map(f => (
@@ -230,25 +211,11 @@ export default function ReviewsPage() {
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
         <div style={{ padding: '0 18px' }}>
-          <div style={{ padding: '28px 0 24px', borderBottom: '1px solid var(--border)', marginBottom: 20 }}>
-            <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'var(--text)', lineHeight: 1.15, marginBottom: 8, textAlign: 'center' as const }}>Every show deserves to be <span style={{ color: 'var(--accent)' }}>remembered.</span></h1>
-            <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20, textAlign: 'center' as const, lineHeight: 1.65 }}>Real reviews from fans across Southeast Asia.</p>
-            <form onSubmit={e => { e.preventDefault(); const q = (e.currentTarget.querySelector('input') as HTMLInputElement).value.trim(); if (q) window.location.href = `/search?q=${encodeURIComponent(q)}` }} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--muted)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input placeholder="Artist, show, venue…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 15, color: 'var(--text)', outline: 'none' }} />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
-                <select style={{ background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: 'var(--muted)', outline: 'none', flex: 1 }}>
-                  <option>All countries</option>
-                  {SEA_COUNTRIES.map(c => <option key={c.code}>{c.label}</option>)}
-                </select>
-                <button type="submit" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--bg)', background: 'var(--accent)', border: 'none', borderRadius: 6, padding: '8px 18px', cursor: 'pointer' }}>Search →</button>
-              </div>
-            </form>
+          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 12, paddingTop: 24, lineHeight: 1.2 }}>Reviews</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 14px', marginBottom: 12 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search artist, venue, city…" style={{ flex: 1, background: 'none', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: 'var(--text)', outline: 'none' }} />
           </div>
-
-          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--text)', marginBottom: 4 }}>Reviews</h2>
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
             {FILTERS.map(f => <button key={f} onClick={() => setActiveFilter(f)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, padding: '6px 14px', borderRadius: 100, cursor: 'pointer', border: '1px solid var(--border)', background: activeFilter === f ? 'var(--accent)' : 'var(--surface2)', color: activeFilter === f ? 'var(--bg)' : 'var(--muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>{f}</button>)}
             <Link href="/search?q=&filter=reviews" style={{ fontFamily: 'Unbounded, sans-serif', fontSize: 11, fontWeight: 700, padding: '6px 14px', borderRadius: 100, border: '1px solid var(--border)', color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>All Reviews →</Link>
