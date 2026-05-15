@@ -585,8 +585,6 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
     if (data) {
       const { data: prof } = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
       const name = prof?.display_name || user.email?.split('@')[0] || 'Fan'
-      const profile = await supabase.from('profiles').select('display_name').eq('id', user.id).single()
-      const name = profile.data?.display_name || user.email?.split('@')[0] || 'Fan'
       setComments(prev => prev.map(c => c.id === commentId ? {
         ...c, replies: [...(c.replies || []), {
           id: data.id, targetId, targetType: targetType as 'show' | 'post',
