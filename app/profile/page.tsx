@@ -48,8 +48,10 @@ export default function ProfilePage() {
   const [reviews, setReviews] = useState<DBReview[]>([])
   const [savedShows, setSavedShows] = useState<SavedShow[]>([])
   const [goingShows, setGoingShows] = useState<SavedShow[]>([])
+  const [userComments, setUserComments] = useState<any[]>([])
+  const [unreadReplies, setUnreadReplies] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-  const [activeTab, setActiveTab] = useState<'reviews' | 'going' | 'saved'>('reviews')
+  const [activeTab, setActiveTab] = useState<'reviews' | 'going' | 'saved' | 'comments'>('reviews')
   const [loading, setLoading] = useState(true)
   const [settingsForm, setSettingsForm] = useState({ display_name: '', countries: [] as string[] })
   const [saving, setSaving] = useState(false)
@@ -81,6 +83,26 @@ export default function ProfilePage() {
         user = u || null
       }
 
+      // Fetch user's comments and check for replies
+      const { data: userCommentData } = await supabase
+        .from('comments')
+        .select('id, body, created_at, target_id, target_type')
+        .eq('user_id', user.id)
+        .is('parent_id', null)
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (userCommentData && userCommentData.length > 0) {
+        setUserComments(userCommentData)
+        // Check if any comments have replies
+        const commentIds = userCommentData.map((c: any) => c.id)
+        const { data: replies } = await supabase
+          .from('comments')
+          .select('id')
+          .in('parent_id', commentIds)
+          .neq('user_id', user.id)
+          .limit(1)
+        if (replies && replies.length > 0) setUnreadReplies(true)
+      }
       clearTimeout(timeout)
       
       if (!user) {
@@ -124,6 +146,26 @@ export default function ProfilePage() {
       }
 
     } catch (e) {
+      // Fetch user's comments and check for replies
+      const { data: userCommentData } = await supabase
+        .from('comments')
+        .select('id, body, created_at, target_id, target_type')
+        .eq('user_id', user.id)
+        .is('parent_id', null)
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (userCommentData && userCommentData.length > 0) {
+        setUserComments(userCommentData)
+        // Check if any comments have replies
+        const commentIds = userCommentData.map((c: any) => c.id)
+        const { data: replies } = await supabase
+          .from('comments')
+          .select('id')
+          .in('parent_id', commentIds)
+          .neq('user_id', user.id)
+          .limit(1)
+        if (replies && replies.length > 0) setUnreadReplies(true)
+      }
       clearTimeout(timeout)
       setLoading(false)
     }
@@ -173,6 +215,7 @@ export default function ProfilePage() {
     { key: 'reviews' as const, label: 'My Reviews', count: reviews.length },
     { key: 'going' as const, label: 'Going', count: goingShows.length },
     { key: 'saved' as const, label: 'Saved Shows', count: savedShows.length },
+    { key: 'comments' as const, label: 'My Comments', count: userComments.length },
   ]
 
   const tabBar = (
@@ -284,7 +327,7 @@ export default function ProfilePage() {
                 <div>
                   <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 10 }}>{displayName}</h1>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
-                    {[`${reviews.length} Reviews`, `${savedShows.length} Saved`].map(s => <span key={s} style={{ fontSize: 13, color: 'var(--bg)', background: 'var(--accent)', padding: '3px 12px', borderRadius: 100, fontWeight: 600 }}>{s}</span>)}
+
                     {(profile?.countries || []).map(c => {
                       const country = SEA_COUNTRIES.find(x => x.code === c)
                       return country ? <span key={c} style={{ fontSize: 13, color: 'var(--muted)', background: 'var(--surface2)', border: '1px solid var(--border)', padding: '3px 12px', borderRadius: 100 }}>{country.flag} {c}</span> : null
@@ -314,7 +357,7 @@ export default function ProfilePage() {
             <div>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 18, color: 'var(--text)', marginBottom: 8 }}>{displayName}</p>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
-                {[`${reviews.length} Reviews`, `${savedShows.length} Saved`].map(s => <span key={s} style={{ fontSize: 12, color: 'var(--bg)', background: 'var(--accent)', padding: '3px 10px', borderRadius: 100, fontWeight: 600 }}>{s}</span>)}
+
                 {(profile?.countries || []).map(c => {
                   const country = SEA_COUNTRIES.find(x => x.code === c)
                   return country ? <span key={c} style={{ fontSize: 12, color: 'var(--muted)', background: 'var(--surface2)', border: '1px solid var(--border)', padding: '3px 10px', borderRadius: 100 }}>{country.flag} {c}</span> : null

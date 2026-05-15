@@ -138,6 +138,51 @@ export function PageSearchBar({ placeholder }: { placeholder: string }) {
 }
 
 // ─── PHOTO UPLOAD ─────────────────────────────────────────────
+
+// ─── PHOTO GALLERY WITH LIGHTBOX ─────────────────────────────
+export function PhotoGallery({ photos }: { photos: string[] }) {
+  const [lightbox, setLightbox] = useState<number | null>(null)
+
+  function prev() { setLightbox(i => i !== null ? (i - 1 + photos.length) % photos.length : null) }
+  function next() { setLightbox(i => i !== null ? (i + 1) % photos.length : null) }
+
+  return (
+    <>
+      {/* Thumbnails */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const, marginBottom: 14 }}>
+        {photos.map((p, i) => (
+          <button key={i} onClick={() => setLightbox(i)} style={{ padding: 0, border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden', cursor: 'zoom-in', background: 'none', flexShrink: 0 }}>
+            <img src={p} alt="" style={{ width: 80, height: 80, objectFit: 'cover', display: 'block', transition: 'transform .2s' }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.06)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1)'}
+            />
+          </button>
+        ))}
+      </div>
+
+      {/* Lightbox */}
+      {lightbox !== null && (
+        <div onClick={() => setLightbox(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.92)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Close */}
+          <button onClick={() => setLightbox(null)} style={{ position: 'absolute', top: 20, right: 20, background: 'rgba(255,255,255,.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: 'white', fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1001 }}>✕</button>
+          {/* Counter */}
+          <p style={{ position: 'absolute', top: 24, left: '50%', transform: 'translateX(-50%)', fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: 'rgba(255,255,255,.6)' }}>{lightbox + 1} / {photos.length}</p>
+          {/* Prev */}
+          {photos.length > 1 && (
+            <button onClick={e => { e.stopPropagation(); prev() }} style={{ position: 'absolute', left: 16, background: 'rgba(255,255,255,.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: 'white', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</button>
+          )}
+          {/* Image */}
+          <img src={photos[lightbox]} alt="" onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: 8 }} />
+          {/* Next */}
+          {photos.length > 1 && (
+            <button onClick={e => { e.stopPropagation(); next() }} style={{ position: 'absolute', right: 16, background: 'rgba(255,255,255,.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: 'white', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>›</button>
+          )}
+        </div>
+      )}
+    </>
+  )
+}
+
 export function PhotoUpload({ photos, setPhotos }: { photos: string[]; setPhotos: (p: string[]) => void }) {
   const MAX = 10
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
