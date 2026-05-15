@@ -275,6 +275,54 @@ export default function ProfilePage() {
     </div>
   )
 
+
+  const goingContent = (
+    <div>
+      {goingShows.length === 0 ? (
+        <div style={{ textAlign: 'center' as const, padding: '40px 0' }}>
+          <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 16 }}>No upcoming shows marked as going yet.</p>
+          <Link href="/events" style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '10px 24px', borderRadius: 8, textDecoration: 'none' }}>Browse Shows</Link>
+        </div>
+      ) : goingShows.map((item: any, i: number) => {
+        const show = item.shows
+        if (!show) return null
+        return (
+          <Link key={i} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 14, padding: '16px 0', borderBottom: '1px solid var(--border)', alignItems: 'center', color: 'inherit' }}>
+            <div style={{ width: 52, height: 52, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 2 }}>{show.artist}</p>
+              <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show.venue}, {show.city} · {show.date_display}</p>
+            </div>
+            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--accent)', whiteSpace: 'nowrap' as const }}>{show.price}</p>
+          </Link>
+        )
+      })}
+    </div>
+  )
+
+  const commentsContent = (
+    <div>
+      {userComments.length === 0 ? (
+        <div style={{ textAlign: 'center' as const, padding: '40px 0' }}>
+          <p style={{ fontSize: 15, color: 'var(--muted)' }}>No comments yet.</p>
+        </div>
+      ) : userComments.map((c: any) => (
+        <Link key={c.id} href={`/events/${c.target_id}`} style={{ textDecoration: 'none', display: 'block', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
+          <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.6, marginBottom: 6 }}>{c.body}</p>
+          <p style={{ fontSize: 12, color: 'var(--muted)' }}>{new Date(c.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' })} · <span style={{ color: 'var(--accent)' }}>View show →</span></p>
+        </Link>
+      ))}
+    </div>
+  )
+
+  function tabContent() {
+    if (activeTab === 'reviews') return reviewsContent
+    if (activeTab === 'going') return goingContent
+    if (activeTab === 'saved') return savedContent
+    if (activeTab === 'comments') return commentsContent
+    return null
+  }
+
   if (loading) return (
     <>
       <TopNav />
@@ -339,7 +387,7 @@ export default function ProfilePage() {
             </div>
           </div>
           {tabBar}
-          {activeTab === 'reviews' ? reviewsContent : savedContent}
+          {tabContent()}
         </div>
         <Footer />
       </div>
@@ -366,7 +414,7 @@ export default function ProfilePage() {
             </div>
           </div>
           {tabBar}
-          {activeTab === 'reviews' ? reviewsContent : savedContent}
+          {tabContent()}
         </div>
         <BottomNav />
       </div>
