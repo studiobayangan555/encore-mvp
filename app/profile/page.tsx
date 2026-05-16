@@ -219,11 +219,14 @@ export default function ProfilePage() {
   ]
 
   const tabBar = (
-    <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: 32 }}>
+    <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: 32, overflowX: 'auto', scrollbarWidth: 'none' as const, WebkitOverflowScrolling: 'touch' as any }}>
       {tabs.map(t => (
-        <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: activeTab === t.key ? 'var(--text)' : 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', marginRight: 32, borderBottom: activeTab === t.key ? '2px solid var(--accent)' : '2px solid transparent', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: activeTab === t.key ? 'var(--text)' : 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', marginRight: 20, borderBottom: activeTab === t.key ? '2px solid var(--accent)' : '2px solid transparent', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' as const, flexShrink: 0 }}>
           {t.label}
-          <span style={{ fontSize: 11, background: 'var(--surface2)', border: '1px solid var(--border)', padding: '1px 8px', borderRadius: 100, color: 'var(--muted)', fontWeight: 400 }}>{t.count}</span>
+          <span style={{ fontSize: 10, background: 'var(--surface2)', border: '1px solid var(--border)', padding: '1px 6px', borderRadius: 100, color: 'var(--muted)', fontWeight: 400 }}>{t.count}</span>
+          {t.key === 'comments' && unreadReplies && (
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
+          )}
         </button>
       ))}
     </div>

@@ -392,9 +392,19 @@ export function VoteBar({ targetId, targetType, initialUp = 0, initialDown = 0 }
 }
 
 // ─── MOBILE HEADER ────────────────────────────────────────────
+function ThemeToggle() {
+  const { theme, toggle } = useTheme()
+  return (
+    <button onClick={toggle} style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+      <span style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+    </button>
+  )
+}
+
 export function MobileHeader() {
   const [searchOpen, setSearchOpen] = useState(false)
   const { user, profileName } = useSession()
+  const { theme, toggle } = useTheme()
   const initials = profileName
     ? profileName.slice(0,2).toUpperCase()
     : user?.email?.slice(0,2).toUpperCase() || 'U'
@@ -403,11 +413,12 @@ export function MobileHeader() {
       <div style={{ position: 'sticky', top: 0, zIndex: 100, background: 'var(--nav-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '0 18px', height: 54, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
         <Link href="/" style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--accent)', textDecoration: 'none', flexShrink: 0 }}>encore</Link>
 
-        {/* Right side — search icon circle + profile circle */}
+        {/* Right side — search + theme toggle + profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <button onClick={() => setSearchOpen(true)} style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--muted)', flexShrink: 0 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </button>
+          <ThemeToggle />
           <Link href={user ? '/profile' : '/auth/login'} style={{ width: 34, height: 34, borderRadius: '50%', background: user ? 'linear-gradient(135deg,#1a0033,#4400aa)' : 'var(--surface2)', border: user ? 'none' : '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, color: 'white', textDecoration: 'none', flexShrink: 0 }}>
             {user ? initials : (
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--muted)' }}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -444,26 +455,23 @@ export function MobileFooter() {
 // ─── BOTTOM NAV ───────────────────────────────────────────────
 export function BottomNav() {
   const pathname = usePathname()
-  const { theme } = useTheme()
-  const items = [
+  const { user } = useSession()
+  const navItems = [
     { label: 'Reviews', href: '/reviews', icon: '★' },
     { label: 'Shows', href: '/events', icon: '🎟' },
     { label: 'Blog', href: '/blog', icon: '📰' },
-    { label: 'Profile', href: '/profile', icon: '👤' },
   ]
+  const profileHref = user ? '/profile' : '/auth/login'
   return (
     <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: 60, background: 'var(--nav-bg)', backdropFilter: 'blur(20px)', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-around', zIndex: 100, paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      {items.slice(0, 2).map(item => (
+      {navItems.map(item => (
         <Link key={item.href} href={item.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, color: pathname.startsWith(item.href) ? 'var(--accent)' : 'var(--muted)', textDecoration: 'none', fontSize: 10, fontWeight: 600, minWidth: 48 }}>
           <span style={{ fontSize: 20 }}>{item.icon}</span>{item.label}
         </Link>
       ))}
-
-      {items.slice(2).map(item => (
-        <Link key={item.href} href={item.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, color: pathname.startsWith(item.href) ? 'var(--accent)' : 'var(--muted)', textDecoration: 'none', fontSize: 10, fontWeight: 600, minWidth: 48 }}>
-          <span style={{ fontSize: 20 }}>{item.icon}</span>{item.label}
-        </Link>
-      ))}
+      <Link href={profileHref} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, color: pathname.startsWith('/profile') ? 'var(--accent)' : 'var(--muted)', textDecoration: 'none', fontSize: 10, fontWeight: 600, minWidth: 48 }}>
+        <span style={{ fontSize: 20 }}>👤</span>Profile
+      </Link>
     </nav>
   )
 }
