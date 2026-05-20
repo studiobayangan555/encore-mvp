@@ -39,12 +39,13 @@ export function Logo({ size = 20 }: { size?: number }) {
 // Renders real poster image if available, falls back to gradient
 export function ShowPoster({
   posterUrl, gradient = 'linear-gradient(135deg,#1a0033,#4400aa)',
-  style = {}, children
+  style = {}, children, title
 }: {
   posterUrl?: string | null
   gradient?: string
   style?: React.CSSProperties
   children?: React.ReactNode
+  title?: string
 }) {
   return (
     <div style={{
@@ -60,11 +61,15 @@ export function ShowPoster({
         />
       )}
       {!posterUrl && (
-        // Colour tint overlay on gradient (matches the brand treatment)
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.4)', mixBlendMode: 'multiply' }} />
+        <>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.4)', mixBlendMode: 'multiply' }} />
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 8, gap: 4 }}>
+            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 10, color: 'rgba(232,255,71,0.7)', letterSpacing: '0.06em' }}>encore</span>
+            {title && <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 9, color: 'rgba(255,255,255,0.65)', textAlign: 'center' as const, lineHeight: 1.3, wordBreak: 'break-word' as const }}>{title}</span>}
+          </div>
+        </>
       )}
       {posterUrl && (
-        // Subtle tint over real images for brand consistency
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,10,15,0.15)' }} />
       )}
       {children && <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>}

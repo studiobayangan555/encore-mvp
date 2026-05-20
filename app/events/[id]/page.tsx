@@ -149,7 +149,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>Reviews open after the event takes place. Mark yourself as going or save this show to get notified.</p>
       <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14 }}>
         <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 6 }}>Interested</p>
-        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 16, color: 'var(--text)' }}>{show.going_count} <span style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 400 }}>people going</span></p>
+
       </div>
     </div>
   )
@@ -336,7 +336,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 36, color: 'var(--text)', lineHeight: 1.1, margin: '10px 0 12px' }}>{show.artist}</h1>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show.venue}, {show.city}</p>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-              <Link href={`/promoters/${show.promoter_slug}`} style={{ fontSize: 14, color: 'var(--accent)', textDecoration: 'none', display: 'inline-block', marginBottom: 24 }}>By {show.promoter} →</Link>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>By {show.promoter}</p>
               <div style={{ display: 'flex', gap: 20, marginBottom: 28, alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 200, maxWidth: 220 }}>
                   {show.is_past ? (
@@ -349,7 +349,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </div>
                   )}
                   {show.is_past && <>
-                    <MetaField label="Encore Members Went" value={`${show.going_count} members`} />
+
                     <MetaField label="Est. Attendance" value="Fan submitted" />
                   </>}
                 </div>
@@ -380,7 +380,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, margin: '8px 0 8px' }}>{show.artist}</h1>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 3 }}>{show.venue}, {show.city}</p>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-          <Link href={`/promoters/${show.promoter_slug}`} style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none', display: 'inline-block', marginBottom: 20 }}>By {show.promoter} →</Link>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 20 }}>By {show.promoter}</p>
           <div style={{ marginBottom: 20 }}><ActionButtons stacked /></div>
           <div style={{ marginBottom: 20 }}><RatingSummary /></div>
           <TabBar />

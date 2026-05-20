@@ -101,7 +101,7 @@ export default function EventsPage() {
                 <div style={{ height: 280, borderRadius: 'var(--radius)', background: 'var(--surface2)', marginBottom: 24, animation: 'pulse 1.5s infinite' }} />
               ) : featured && (
                 <Link href={`/events/${featured.id}`} style={{ textDecoration: 'none', display: 'block', borderRadius: 'var(--radius)', overflow: 'hidden', position: 'relative', height: 280, marginBottom: 24 }}>
-                  <ShowPoster posterUrl={featured.poster_url} gradient='linear-gradient(135deg,#1a0033,#6600cc,#080A0F)' style={{ position: 'absolute', inset: 0 }} />
+                  <ShowPoster posterUrl={featured.poster_url} gradient='linear-gradient(135deg,#1a0033,#6600cc,#080A0F)' title={featured.artist} style={{ position: 'absolute', inset: 0 }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(8,10,15,.95) 0%,rgba(8,10,15,.2) 60%,transparent 100%)', padding: 28, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                     <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 100, background: 'rgba(255,77,109,.2)', color: '#FF4D6D', marginBottom: 10, alignSelf: 'flex-start' }}>Selling Fast</span>
                     <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 32, color: 'white', lineHeight: 1, marginBottom: 6 }}>{featured.artist}</p>

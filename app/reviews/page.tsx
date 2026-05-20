@@ -42,7 +42,7 @@ function ListRow({ show, idx, topReviews }: { show: Show; idx: number; topReview
       onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'}
       onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
     >
-      <ShowPoster posterUrl={show.poster_url} gradient={grad} style={{ width: 88, flexShrink: 0, alignSelf: 'stretch' }}>
+      <ShowPoster posterUrl={show.poster_url} gradient={grad} title={show.artist} style={{ width: 88, flexShrink: 0, alignSelf: 'stretch' }}>
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--accent)', zIndex: 2 }} />
       </ShowPoster>
       <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, borderRight: '1px solid var(--border)', minWidth: 0 }}>
