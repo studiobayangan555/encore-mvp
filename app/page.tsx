@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, ShowPoster, EventBadge, S } from '@/components'
-import { getShowsWithReviews, getUpcomingShows, getReviewsByShow, type Show, type Review } from '@/lib/queries'
+import { getShowsWithReviews, getUpcomingShows, getFeaturedShow, getReviewsByShow, type Show, type Review } from '@/lib/queries'
 
 const GRADIENTS = [
   'linear-gradient(135deg,#1a0033,#4400aa)',
@@ -18,6 +18,7 @@ const FILTERS = ['Latest', 'Popular', 'Trending']
 export default function HomePage() {
   const [pastShows, setPastShows] = useState<Show[]>([])
   const [upcomingShows, setUpcomingShows] = useState<Show[]>([])
+  const [featured, setFeatured] = useState<Show | null>(null)
   const [topReviews, setTopReviews] = useState<Record<string, Review>>({})
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('Latest')
@@ -26,12 +27,14 @@ export default function HomePage() {
 
   useEffect(() => {
     async function load() {
-      const [past, upcoming] = await Promise.all([
+      const [past, upcoming, feat] = await Promise.all([
         getShowsWithReviews(),
         getUpcomingShows(),
+        getFeaturedShow(),
       ])
       setPastShows(past)
-      setUpcomingShows(upcoming)
+      setFeatured(feat)
+      setUpcomingShows(feat ? upcoming.filter(s => s.id !== feat.id) : upcoming)
 
       // Fetch top review for each past show (first 5)
       const reviews: Record<string, Review> = {}
@@ -54,7 +57,6 @@ export default function HomePage() {
     setSorted([...list])
   }, [pastShows, activeFilter])
 
-  const featured = upcomingShows[0] || null
   const showGrid = upcomingShows.slice(1, 4)
   const showList = upcomingShows.slice(4, 10)
 

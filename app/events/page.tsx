@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, Breadcrumb, EventBadge, Sidebar, SidebarLabel, SidebarLink, AdSpot, ShowPoster, S } from '@/components'
-import { getUpcomingShows, type Show } from '@/lib/queries'
+import { getUpcomingShows, getFeaturedShow, type Show } from '@/lib/queries'
 
 const SEA_COUNTRIES = [
   { code: 'MY', label: 'Malaysia' }, { code: 'SG', label: 'Singapore' },
@@ -15,6 +15,7 @@ type Sort = 'soonest' | 'latest' | 'popular' | 'trending' | 'this-week' | 'this-
 
 export default function EventsPage() {
   const [shows, setShows] = useState<Show[]>([])
+  const [featured, setFeatured] = useState<Show | null>(null)
   const [loading, setLoading] = useState(true)
   const [sort, setSort] = useState<Sort>('soonest')
   const [search, setSearch] = useState('')
@@ -24,7 +25,6 @@ export default function EventsPage() {
     getUpcomingShows().then(data => { setShows(data); setLoading(false) })
   }, [])
 
-  const featured = shows[0] || null
   const grid = shows.slice(1, 4)
 
   const filtered = useMemo(() => {
