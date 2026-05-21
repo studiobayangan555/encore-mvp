@@ -506,7 +506,7 @@ export function Footer() {
         ))}
       </div>
       <div style={{ maxWidth: 1100, margin: '32px auto 0', padding: '24px 48px 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p style={{ fontSize: 12, color: 'var(--muted)' }}>© 2026 Encore Media. All rights reserved.</p>
+        <p style={{ fontSize: 12, color: 'var(--muted)' }}>© 2026 Studio Bayangan Enterprise (MA0260534-X). All rights reserved.</p>
         <div style={{ display: 'flex', gap: 20 }}>
           {['/legal/terms', '/legal/privacy', '/legal/cookies'].map((href, i) => (
             <Link key={href} href={href} style={{ fontSize: 12, color: 'var(--muted)', textDecoration: 'none' }}>{['Terms', 'Privacy', 'Cookies'][i]}</Link>

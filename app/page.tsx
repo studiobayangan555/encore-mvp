@@ -16,6 +16,7 @@ const GRADIENTS = [
 const FILTERS = ['Latest', 'Popular', 'Trending']
 
 export default function HomePage() {
+  const [bannerVisible, setBannerVisible] = useState(false)
   const [pastShows, setPastShows] = useState<Show[]>([])
   const [upcomingShows, setUpcomingShows] = useState<Show[]>([])
   const [featured, setFeatured] = useState<Show | null>(null)
@@ -24,6 +25,12 @@ export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState('Latest')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchCountry, setSearchCountry] = useState('All')
+
+  useEffect(() => {
+    if (!localStorage.getItem('encore-banner-dismissed')) {
+      setBannerVisible(true)
+    }
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -47,6 +54,11 @@ export default function HomePage() {
     }
     load()
   }, [])
+
+  function dismissBanner() {
+    setBannerVisible(false)
+    localStorage.setItem('encore-banner-dismissed', '1')
+  }
 
   const [sorted, setSorted] = useState<Show[]>([])
   useEffect(() => {
@@ -79,6 +91,14 @@ export default function HomePage() {
     <>
       {/* ── DESKTOP ─────────────────────────────── */}
       <div className="hidden lg:block">
+        {bannerVisible && (
+          <div style={{ background: '#1a0033', borderBottom: '1px solid rgba(232,255,71,0.2)', padding: '10px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <p style={{ fontSize: 13, color: 'rgba(232,236,244,0.8)', margin: 0 }}>
+              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — currently covering Malaysia. Singapore, Thailand, Indonesia & the Philippines coming in the next 4–6 weeks.
+            </p>
+            <button onClick={dismissBanner} style={{ background: 'none', border: 'none', color: 'rgba(232,236,244,0.5)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}>✕</button>
+          </div>
+        )}
         <TopNav />
 
         {/* 1. HERO */}
@@ -88,8 +108,8 @@ export default function HomePage() {
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 52, color: 'white', lineHeight: 1.08, letterSpacing: '-.02em', marginBottom: 16 }}>
             Every show deserves<br />to be <span style={{ color: 'var(--accent)' }}>remembered.</span>
           </h1>
-          <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 520, margin: '0 auto 44px', lineHeight: 1.7 }}>
-            Real reviews from fans who were actually there — every show, every night, across Malaysia, Singapore, Thailand, Indonesia, and the Philippines.
+          <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
+            Real reviews from fans who were actually there. We're starting with Malaysia — Singapore, Thailand, Indonesia, and the Philippines are coming in the next 4–6 weeks.
           </p>
           {/* Hero search */}
           <form onSubmit={handleSearch} style={{ maxWidth: 700, margin: '0 auto 28px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 14, overflow: 'hidden', height: 62, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
@@ -276,13 +296,21 @@ export default function HomePage() {
 
       {/* ── MOBILE ──────────────────────────────── */}
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
+        {bannerVisible && (
+          <div style={{ background: '#1a0033', borderBottom: '1px solid rgba(232,255,71,0.2)', padding: '10px 18px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+            <p style={{ fontSize: 12, color: 'rgba(232,236,244,0.8)', margin: 0, lineHeight: 1.5 }}>
+              🚧 <strong style={{ color: 'var(--accent)' }}>Early access</strong> — Malaysia only for now. More countries in 4–6 weeks.
+            </p>
+            <button onClick={dismissBanner} style={{ background: 'none', border: 'none', color: 'rgba(232,236,244,0.5)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}>✕</button>
+          </div>
+        )}
         <MobileHeader />
 
         {/* Mobile hero */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderBottom: '1px solid var(--border)', padding: '36px 20px 32px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 14 }}>Southeast Asia's live music community</span>
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Every show deserves to be <span style={{ color: 'var(--accent)' }}>remembered.</span></h1>
-          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Real reviews from fans who were actually there.</p>
+          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Real reviews from fans who were actually there. Starting with Malaysia — more countries in 4–6 weeks.</p>
           <form onSubmit={handleSearch} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
