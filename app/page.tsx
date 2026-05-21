@@ -94,7 +94,7 @@ export default function HomePage() {
         {bannerVisible && (
           <div style={{ background: '#1a0033', borderBottom: '1px solid rgba(232,255,71,0.2)', padding: '10px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <p style={{ fontSize: 13, color: 'rgba(232,236,244,0.8)', margin: 0 }}>
-              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — currently covering Malaysia. Singapore, Thailand, Indonesia & the Philippines coming in the next 4–6 weeks.
+              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — Coverage currently for Malaysia, with a roadmap to Southeast Asia.  
             </p>
             <button onClick={dismissBanner} style={{ background: 'none', border: 'none', color: 'rgba(232,236,244,0.5)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}>✕</button>
           </div>
@@ -109,7 +109,7 @@ export default function HomePage() {
             Was it worth<br />showing <span style={{ color: 'var(--accent)' }}>up?</span>
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
-            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one. Singapore, Thailand, Indonesia & the Philippines coming in 4–6 weeks.
+            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.
           </p>
           {/* Hero search */}
           <form onSubmit={handleSearch} style={{ maxWidth: 700, margin: '0 auto 28px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 14, overflow: 'hidden', height: 62, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
@@ -416,7 +416,7 @@ export default function HomePage() {
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Your opinion matters more than any <span style={{ color: 'var(--accent)' }}>review site.</span></h2>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 28, lineHeight: 1.7 }}>You were in the crowd. You know how it actually felt. Write it down — help the next fan decide.</p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 10, padding: '14px 36px', textDecoration: 'none', marginBottom: 12 }}>Create a free account →</Link>
-          <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}>Free forever · No spam</p>
+          <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}></p>
           <div style={{ display: 'flex', gap: 24, justifyContent: 'center', marginTop: 36, flexWrap: 'wrap' as const }}>
             {[['5','Countries'],['350+','Shows'],['100%','Fan written']].map(([num, label]) => (
               <div key={label} style={{ textAlign: 'center' as const }}>
