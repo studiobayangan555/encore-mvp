@@ -22,13 +22,19 @@ export default function EventsPage() {
   const [genreFilter, setGenreFilter] = useState('')
 
   useEffect(() => {
-    getUpcomingShows().then(data => { setShows(data); setLoading(false) })
+    async function load() {
+      const [data, feat] = await Promise.all([getUpcomingShows(), getFeaturedShow()])
+      setFeatured(feat)
+      setShows(feat ? data.filter(s => s.id !== feat.id) : data)
+      setLoading(false)
+    }
+    load()
   }, [])
 
-  const grid = shows.slice(1, 4)
+  const grid = shows.slice(0, 3)
 
   const filtered = useMemo(() => {
-    let list = shows.slice(1)
+    let list = shows.slice(0)
     if (genreFilter) list = list.filter(s => s.genre?.toLowerCase().includes(genreFilter.toLowerCase()))
     if (search) list = list.filter(s =>
       s.artist.toLowerCase().includes(search.toLowerCase()) ||
