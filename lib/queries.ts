@@ -113,7 +113,7 @@ export async function getFeaturedShow(): Promise<Show | null> {
   const supabase = createDataClient()
   const today = new Date().toISOString().split('T')[0]
 
-  // Try is_featured first
+  // Try is_featured = true first
   const { data: featured } = await supabase
     .from('shows')
     .select('*')
@@ -121,11 +121,11 @@ export async function getFeaturedShow(): Promise<Show | null> {
     .eq('is_featured', true)
     .gte('date', today)
     .limit(1)
-    .single()
+    .maybeSingle()
 
   if (featured) return { ...featured, is_past: false }
 
-  // Fall back to nearest upcoming show
+  // Fall back to nearest upcoming show by date
   const { data, error } = await supabase
     .from('shows')
     .select('*')
@@ -133,10 +133,9 @@ export async function getFeaturedShow(): Promise<Show | null> {
     .gte('date', today)
     .order('date', { ascending: true })
     .limit(1)
-    .single()
-    .limit(1)
-    .single()
-  if (error) return null
+    .maybeSingle()
+
+  if (error || !data) return null
   return { ...data, is_past: false }
 }
 
