@@ -62,10 +62,10 @@ export function ShowPoster({
       )}
       {!posterUrl && (
         <>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.4)', mixBlendMode: 'multiply' }} />
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 8, gap: 4 }}>
-            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 10, color: 'rgba(232,255,71,0.7)', letterSpacing: '0.06em' }}>encore</span>
-            {title && <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 9, color: 'rgba(255,255,255,0.65)', textAlign: 'center' as const, lineHeight: 1.3, wordBreak: 'break-word' as const }}>{title}</span>}
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.35)', mixBlendMode: 'multiply' }} />
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '12px 10px', gap: 6, textAlign: 'center' as const }}>
+            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: 'rgba(232,255,71,0.85)', letterSpacing: '0.04em', lineHeight: 1 }}>encore</span>
+            {title && <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: 11, color: 'rgba(255,255,255,0.7)', lineHeight: 1.35, wordBreak: 'break-word' as const, maxWidth: '90%' }}>{title}</span>}
           </div>
         </>
       )}

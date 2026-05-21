@@ -299,7 +299,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           {!show.poster_url && <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', textAlign: 'center' as const, padding: 16, position: 'relative', zIndex: 1 }}>Poster image</p>}
         </ShowPoster>
         <AdSpot />
-        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 12, marginTop: 4 }}>Other Events by "{show.promoter}"</p>
+        {show.promoter && <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 12, marginTop: 4 }}>Other Events by "{show.promoter}"</p>}
         {promoterShows.length === 0 ? <p style={{ fontSize: 13, color: 'var(--muted)' }}>No other events listed.</p> : promoterShows.map(s => (
           <Link key={s.id} href={`/events/${s.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
@@ -336,7 +336,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 36, color: 'var(--text)', lineHeight: 1.1, margin: '10px 0 12px' }}>{show.artist}</h1>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show.venue}, {show.city}</p>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>By {show.promoter}</p>
+              {show.promoter && <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>By {show.promoter}</p>}
               <div style={{ display: 'flex', gap: 20, marginBottom: 28, alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 200, maxWidth: 220 }}>
                   {show.is_past ? (
@@ -380,7 +380,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, margin: '8px 0 8px' }}>{show.artist}</h1>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 3 }}>{show.venue}, {show.city}</p>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-          <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 20 }}>By {show.promoter}</p>
+          {show.promoter && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 20 }}>By {show.promoter}</p>}
           <div style={{ marginBottom: 20 }}><ActionButtons stacked /></div>
           <div style={{ marginBottom: 20 }}><RatingSummary /></div>
           <TabBar />

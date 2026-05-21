@@ -143,7 +143,7 @@ export default function HomePage() {
                 <ShowPoster posterUrl={show.poster_url} gradient={grad} style={{ width: 88, flexShrink: 0, alignSelf: 'stretch' }}>
                   <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--accent)', zIndex: 2 }} />
                 </ShowPoster>
-                <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, borderRight: '1px solid var(--border)', minWidth: 0 }}>
+                <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                     <div style={{ minWidth: 0 }}>
                       <div style={{ marginBottom: 5 }}><EventBadge type={show.type} /></div>
@@ -163,16 +163,7 @@ export default function HomePage() {
                     )}
                   </div>
                 </div>
-                <div style={{ width: 130, flexShrink: 0, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
-                  <div>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Reviews</p>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.review_count}</p>
-                  </div>
-                  <div>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 9, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 3 }}>Going</p>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>{show.going_count}</p>
-                  </div>
-                </div>
+
               </Link>
             )
           })}

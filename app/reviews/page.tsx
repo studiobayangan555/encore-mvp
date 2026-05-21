@@ -45,7 +45,7 @@ function ListRow({ show, idx, topReviews }: { show: Show; idx: number; topReview
       <ShowPoster posterUrl={show.poster_url} gradient={grad} title={show.artist} style={{ width: 88, flexShrink: 0, alignSelf: 'stretch' }}>
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--accent)', zIndex: 2 }} />
       </ShowPoster>
-      <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, borderRight: '1px solid var(--border)', minWidth: 0 }}>
+      <div style={{ flex: 1, padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ marginBottom: 5 }}><EventBadge type={show.type} /></div>
