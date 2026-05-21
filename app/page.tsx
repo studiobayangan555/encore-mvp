@@ -125,14 +125,14 @@ export default function HomePage() {
               Search
             </button>
           </form>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' as const }}>
+          {/* <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' as const }}>
             {['★ Top rated','🔥 Trending in KL','K-pop','Festivals 2026','Singapore','Gigs this week'].map(tag => (
               <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} style={{ fontSize: 12, color: 'var(--muted)', background: 'rgba(255,255,255,.04)', border: '1px solid var(--border)', padding: '5px 14px', borderRadius: 100, textDecoration: 'none', transition: 'all .15s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--muted)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)' }}
               >{tag}</Link>
             ))}
-          </div>
+          </div> */}
         </section>
 
         {/* 2. REVIEWS */}
