@@ -106,10 +106,10 @@ export default function HomePage() {
           <div style={{ position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)', width: 600, height: 600, background: 'radial-gradient(circle,rgba(123,97,255,.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Southeast Asia's live music community</span>
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 52, color: 'white', lineHeight: 1.08, letterSpacing: '-.02em', marginBottom: 16 }}>
-            Every show deserves<br />to be <span style={{ color: 'var(--accent)' }}>remembered.</span>
+            Was it worth<br />showing <span style={{ color: 'var(--accent)' }}>up?</span>
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
-            Real reviews from fans who were actually there. We're starting with Malaysia — Singapore, Thailand, Indonesia, and the Philippines are coming in the next 4–6 weeks.
+            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one. Singapore, Thailand, Indonesia & the Philippines coming in 4–6 weeks.
           </p>
           {/* Hero search */}
           <form onSubmit={handleSearch} style={{ maxWidth: 700, margin: '0 auto 28px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 14, overflow: 'hidden', height: 62, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
@@ -272,10 +272,10 @@ export default function HomePage() {
         <section style={{ background: 'linear-gradient(135deg,#0D0A1A 0%,#1a0033 50%,#080A0F 100%)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '96px 48px', textAlign: 'center' as const, position: 'relative', overflow: 'hidden' }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Join the community</span>
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 40, color: 'white', lineHeight: 1.1, letterSpacing: '-.02em', maxWidth: 680, margin: '0 auto 16px' }}>
-            Your next favourite show is waiting to be <span style={{ color: 'var(--accent)' }}>discovered.</span>
+            Your opinion matters more than<br />any <span style={{ color: 'var(--accent)' }}>review site.</span>
           </h2>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 520, margin: '0 auto 48px', lineHeight: 1.7 }}>
-            Join encore and become part of Southeast Asia's first fan-driven live music community. Write reviews, track shows you've attended, and help other fans decide what's worth showing up for.
+            You were in the crowd. You know how it actually felt. Write it down — help the next fan decide. Free, forever.
           </p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 12, padding: '16px 48px', textDecoration: 'none', marginBottom: 16, transition: 'opacity .15s' }}>
             Create a free account →
@@ -309,8 +309,8 @@ export default function HomePage() {
         {/* Mobile hero */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderBottom: '1px solid var(--border)', padding: '36px 20px 32px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 14 }}>Southeast Asia's live music community</span>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Every show deserves to be <span style={{ color: 'var(--accent)' }}>remembered.</span></h1>
-          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Real reviews from fans who were actually there. Starting with Malaysia — more countries in 4–6 weeks.</p>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Was it worth showing <span style={{ color: 'var(--accent)' }}>up?</span></h1>
+          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.</p>
           <form onSubmit={handleSearch} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -413,8 +413,8 @@ export default function HomePage() {
         {/* Mobile signup */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderTop: '1px solid var(--border)', padding: '52px 20px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 16 }}>Join the community</span>
-          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Your next show is waiting to be <span style={{ color: 'var(--accent)' }}>discovered.</span></h2>
-          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 28, lineHeight: 1.7 }}>Join encore — write reviews, track shows, and help other fans decide what's worth showing up for.</p>
+          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Your opinion matters more than any <span style={{ color: 'var(--accent)' }}>review site.</span></h2>
+          <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 28, lineHeight: 1.7 }}>You were in the crowd. You know how it actually felt. Write it down — help the next fan decide.</p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 10, padding: '14px 36px', textDecoration: 'none', marginBottom: 12 }}>Create a free account →</Link>
           <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}>Free forever · No spam</p>
           <div style={{ display: 'flex', gap: 24, justifyContent: 'center', marginTop: 36, flexWrap: 'wrap' as const }}>
