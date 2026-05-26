@@ -295,8 +295,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const LeftSidebar = () => (
     <aside>
       <div style={{ position: 'sticky', top: 80 }}>
-        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' style={{ width: '100%', aspectRatio: '2/3', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {!show.poster_url && <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', textAlign: 'center' as const, padding: 16, position: 'relative', zIndex: 1 }}>Poster image</p>}
+        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show.artist} clickable style={{ width: '100%', aspectRatio: '2/3', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 16 }}>
+          
         </ShowPoster>
         <AdSpot />
         {show.promoter && <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 12, marginTop: 4 }}>Other Events by "{show.promoter}"</p>}
@@ -369,7 +369,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       {/* MOBILE */}
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
-        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' style={{ width: '100%', aspectRatio: '16/9', position: 'relative' }}>
+        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show.artist} clickable style={{ width: '100%', aspectRatio: '16/9', position: 'relative' }}>
           {!show.poster_url && <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>Poster image</p>}
           <button onClick={() => router.back()} style={{ position: 'absolute', top: 12, left: 14, background: 'rgba(8,10,15,.65)', backdropFilter: 'blur(6px)', border: 'none', borderRadius: 8, padding: '8px 10px', cursor: 'pointer', color: 'white', display: 'flex' }}>
             <ArrowLeft size={16} />

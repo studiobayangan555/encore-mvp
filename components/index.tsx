@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import React from 'react'
+mport Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { useSession } from '@/components/session-provider'
 import { usePathname } from 'next/navigation'
@@ -39,41 +40,71 @@ export function Logo({ size = 20 }: { size?: number }) {
 // Renders real poster image if available, falls back to gradient
 export function ShowPoster({
   posterUrl, gradient = 'linear-gradient(135deg,#1a0033,#4400aa)',
-  style = {}, children, title
+  style = {}, children, title, clickable = false
 }: {
   posterUrl?: string | null
   gradient?: string
   style?: React.CSSProperties
   children?: React.ReactNode
   title?: string
+  clickable?: boolean
 }) {
+  const [lightbox, setLightbox] = React.useState(false)
+
   return (
-    <div style={{
-      position: 'relative', overflow: 'hidden',
-      background: posterUrl ? 'transparent' : gradient,
-      ...style
-    }}>
-      {posterUrl && (
-        <img
-          src={posterUrl}
-          alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+    <>
+      <div
+        onClick={posterUrl && clickable ? () => setLightbox(true) : undefined}
+        style={{
+          position: 'relative', overflow: 'hidden',
+          background: gradient,
+          cursor: posterUrl && clickable ? 'zoom-in' : undefined,
+          ...style
+        }}
+      >
+        {posterUrl ? (
+          <>
+            <img
+              src={posterUrl}
+              alt={title || ''}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,10,15,0.08)' }} />
+          </>
+        ) : (
+          <>
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.35)', mixBlendMode: 'multiply' }} />
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 12px', gap: 8, textAlign: 'center' as const }}>
+              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 14, color: 'rgba(232,255,71,0.9)', letterSpacing: '0.05em', lineHeight: 1 }}>encore</span>
+              {title && (
+                <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: 11, color: 'rgba(255,255,255,0.75)', lineHeight: 1.4, wordBreak: 'break-word' as const, maxWidth: '88%' }}>
+                  {title}
+                </span>
+              )}
+            </div>
+          </>
+        )}
+        {children && <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>}
+      </div>
+
+      {lightbox && posterUrl && (
+        <div
+          onClick={() => setLightbox(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <button
+            onClick={() => setLightbox(false)}
+            style={{ position: 'absolute', top: 20, right: 20, background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', fontSize: 22, cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}
+          >✕</button>
+          <img
+            src={posterUrl}
+            alt={title || ''}
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: 8 }}
+          />
+        </div>
       )}
-      {!posterUrl && (
-        <>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(123,97,255,0.35)', mixBlendMode: 'multiply' }} />
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '12px 10px', gap: 6, textAlign: 'center' as const }}>
-            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13, color: 'rgba(232,255,71,0.85)', letterSpacing: '0.04em', lineHeight: 1 }}>encore</span>
-            {title && <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: 11, color: 'rgba(255,255,255,0.7)', lineHeight: 1.35, wordBreak: 'break-word' as const, maxWidth: '90%' }}>{title}</span>}
-          </div>
-        </>
-      )}
-      {posterUrl && (
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,10,15,0.15)' }} />
-      )}
-      {children && <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>}
-    </div>
+    </>
   )
 }
 
