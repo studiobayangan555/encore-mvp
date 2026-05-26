@@ -275,20 +275,20 @@ export default function HomePage() {
             Your opinion matters more than<br />any <span style={{ color: 'var(--accent)' }}>review site.</span>
           </h2>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 520, margin: '0 auto 48px', lineHeight: 1.7 }}>
-            You were in the crowd. You know how it actually felt. Write it down — help the next fan decide. Free, forever.
+            You were in the crowd. You know how it actually felt. Write it down — help the next fan decide. 
           </p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 12, padding: '16px 48px', textDecoration: 'none', marginBottom: 16, transition: 'opacity .15s' }}>
             Create a free account →
           </Link>
-          <p style={{ fontSize: 13, color: 'rgba(232,236,244,.4)', marginBottom: 52 }}>Free forever · No spam · Unsubscribe any time</p>
-          <div style={{ display: 'flex', gap: 56, justifyContent: 'center', flexWrap: 'wrap' as const }}>
+          <p style={{ fontSize: 13, color: 'rgba(232,236,244,.4)', marginBottom: 52 }}>No spam · Unsubscribe any time</p>
+          {/* <div style={{ display: 'flex', gap: 56, justifyContent: 'center', flexWrap: 'wrap' as const }}>
             {[['5','Countries'],['350+','Shows reviewed'],['2,400+','Fan reviews'],['100%','Fan written']].map(([num, label]) => (
               <div key={label} style={{ textAlign: 'center' as const }}>
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--accent)', lineHeight: 1 }}>{num}</p>
                 <p style={{ fontSize: 13, color: 'rgba(232,236,244,.5)', marginTop: 6 }}>{label}</p>
               </div>
             ))}
-          </div>
+          </div> */} 
         </section>
 
         <Footer />
@@ -309,7 +309,7 @@ export default function HomePage() {
         {/* Mobile hero */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderBottom: '1px solid var(--border)', padding: '36px 20px 32px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 14 }}>Southeast Asia's live music community</span>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Was it worth showing <span style={{ color: 'var(--accent)' }}>up?</span></h1>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Was it worth <span style={{ color: 'var(--accent)' }}>showing up?</span></h1>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.</p>
           <form onSubmit={handleSearch} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
