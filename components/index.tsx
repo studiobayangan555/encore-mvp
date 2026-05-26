@@ -66,7 +66,7 @@ export function ShowPoster({
             <img
               src={posterUrl}
               alt={title || ''}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,10,15,0.08)' }} />
           </>
