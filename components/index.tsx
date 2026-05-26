@@ -1,11 +1,10 @@
 'use client'
 
-import React from 'react'
-mport Link from 'next/link'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { useSession } from '@/components/session-provider'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 // ─── THEME ────────────────────────────────────────────────────
 export function useTheme() {
@@ -49,7 +48,7 @@ export function ShowPoster({
   title?: string
   clickable?: boolean
 }) {
-  const [lightbox, setLightbox] = React.useState(false)
+  const [lightbox, setLightbox] = useState(false)
 
   return (
     <>
