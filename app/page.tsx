@@ -413,7 +413,7 @@ export default function HomePage() {
         {/* Mobile signup */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderTop: '1px solid var(--border)', padding: '52px 20px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 16 }}>Join the community</span>
-          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Your opinion matters more than any <span style={{ color: 'var(--accent)' }}>review site.</span></h2>
+          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Did they really deserve an<span style={{ color: 'var(--accent)' }}>encore?</span></h2>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 28, lineHeight: 1.7 }}>You were in the crowd. You know how it actually felt. Write it down — help the next fan decide.</p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 10, padding: '14px 36px', textDecoration: 'none', marginBottom: 12 }}>Create a free account →</Link>
           <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}></p>
