@@ -1,225 +1,319 @@
 'use client'
 
 import { useState } from 'react'
-import { TopNav, BottomNav, Footer, Breadcrumb, S, CheckIcon } from '@/components'
+import Link from 'next/link'
+import { TopNav, BottomNav, MobileHeader, MobileFooter, Footer, Breadcrumb, S } from '@/components'
 import { createClient } from '@/lib/supabase'
 
+const COUNTRIES = ['Malaysia', 'Singapore', 'Thailand', 'Indonesia', 'Philippines']
+const TYPES = ['concert', 'gig', 'festival', 'multi-night']
+const GENRES = ['Pop', 'Rock', 'Indie', 'Electronic', 'Hip-Hop', 'R&B', 'Jazz', 'Classical', 'Metal', 'Folk', 'K-Pop', 'J-Pop', 'World', 'Punk', 'Shoegaze', 'Alternative', 'Other']
+
+const INPUT = {
+  width: '100%', background: 'var(--surface2)', border: '1px solid var(--border)',
+  borderRadius: 8, padding: '10px 14px', color: 'var(--text)',
+  fontFamily: 'DM Sans, sans-serif', fontSize: 14, outline: 'none',
+  transition: 'border-color .15s',
+} as const
+
+const LABEL = {
+  fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10,
+  textTransform: 'uppercase' as const, letterSpacing: '.08em',
+  color: 'var(--muted)', display: 'block', marginBottom: 6,
+} as const
+
 export default function SubmitPage() {
-  const [form, setForm] = useState({
-    fullName: '', email: '', company: '', url: '', updates: true,
-  })
-  const [submitted, setSubmitted] = useState(false)
+  const [step, setStep] = useState<'show' | 'account' | 'done'>('show')
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [error, setError] = useState('')
 
-  function update(field: string, value: string | boolean) {
-    setForm(prev => ({ ...prev, [field]: value }))
-    setErrors(prev => ({ ...prev, [field]: '' }))
-  }
+  const [form, setForm] = useState({
+    artist: '', venue: '', city: '', country: 'Malaysia',
+    date: '', date_display: '', type: 'concert', genre: '',
+    price: '', ticket_url: '', poster_url: '', description: '',
+    promoter: '', lineup: '',
+  })
 
-  function validate() {
-    const e: Record<string, string> = {}
-    if (!form.fullName.trim()) e.fullName = 'Required'
-    if (!form.email.trim()) e.email = 'Required'
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email'
-    if (!form.company.trim()) e.company = 'Required'
-    return e
+  const [account, setAccount] = useState({
+    name: '', email: '', password: '', submitter_note: '',
+  })
+
+  function set(field: string, value: string) {
+    setForm(f => ({ ...f, [field]: value }))
   }
 
   async function handleSubmit() {
-    const e = validate()
-    if (Object.keys(e).length) { setErrors(e); return }
     setLoading(true)
+    setError('')
     const supabase = createClient()
-    const { error } = await supabase.from('promoter_registrations').insert({
-      full_name: form.fullName,
-      email: form.email,
-      company: form.company,
-      url: form.url || null,
-      updates: form.updates,
-    })
-    setLoading(false)
-    if (error) {
-      if (error.code === '23505') {
-        setErrors({ email: 'This email is already registered.' })
+
+    let userId: string | null = null
+
+    // Try to create account or sign in
+    if (account.email && account.password) {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: account.email,
+        password: account.password,
+        options: { data: { full_name: account.name } }
+      })
+      if (signUpError) {
+        // Maybe already exists — try sign in
+        const { data: signInData } = await supabase.auth.signInWithPassword({
+          email: account.email, password: account.password
+        })
+        userId = signInData?.user?.id || null
       } else {
-        setErrors({ email: 'Something went wrong — please try again.' })
+        userId = signUpData?.user?.id || null
       }
-      return
     }
-    setSubmitted(true)
+
+    // Submit the show
+    const { error: subError } = await supabase.from('show_submissions').insert({
+      ...form,
+      submitter_name: account.name,
+      submitter_email: account.email,
+      submitter_user_id: userId,
+      submitter_note: account.submitter_note,
+      status: 'pending',
+    })
+
+    setLoading(false)
+    if (subError) {
+      setError('Something went wrong. Please try again.')
+      console.error(subError)
+    } else {
+      setStep('done')
+    }
   }
-
-  const inputStyle = (field: string): React.CSSProperties => ({
-    width: '100%',
-    background: 'var(--surface2)',
-    border: `1px solid ${errors[field] ? 'var(--accent-red)' : 'var(--border)'}`,
-    borderRadius: 10,
-    padding: '13px 14px',
-    fontFamily: 'DM Sans, sans-serif',
-    fontSize: 15,
-    color: 'var(--text)',
-    outline: 'none',
-  })
-
-  const fieldLabel = (text: string, required = false) => (
-    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: 8 }}>
-      {text}{required && <span style={{ color: 'var(--accent-red)', marginLeft: 4 }}>*</span>}
-    </p>
-  )
-
-  if (submitted) {
-    return (
-      <>
-        <TopNav />
-        <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', textAlign: 'center' as const, padding: '0 32px' }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(var(--accent-rgb),0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, color: 'var(--accent)' }}>
-            <CheckIcon size={32} />
-          </div>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'var(--text)', marginBottom: 10 }}>You're on the list.</h1>
-          <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.7, maxWidth: 400, marginBottom: 32 }}>
-            We'll be in touch when encore's promoter tools are ready to launch. In the meantime, feel free to browse the platform.
-          </p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' as const, justifyContent: 'center' }}>
-            <a href="/events" style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '12px 24px', borderRadius: 10, textDecoration: 'none' }}>Browse Shows</a>
-            <a href="/reviews" style={{ background: 'var(--surface2)', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '12px 24px', borderRadius: 10, textDecoration: 'none', border: '1px solid var(--border)' }}>Read Reviews</a>
-          </div>
-        </div>
-        <Footer />
-      </>
-    )
-  }
-
-  const formContent = (
-    <div>
-      {/* Value props */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 40 }}>
-        {[
-          { icon: '🌏', title: 'Reach fans across SEA', sub: 'Malaysia, Singapore, Thailand, Indonesia, Philippines' },
-          { icon: '★', title: 'Build your reputation', sub: 'Fan reviews create lasting trust in your events' },
-          { icon: '🚀', title: 'Early access', sub: 'Registrants get first access to promoter tools at launch' },
-        ].map(v => (
-          <div key={v.title} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '22px 20px' }}>
-            <p style={{ fontSize: 28, marginBottom: 10 }}>{v.icon}</p>
-            <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 6, lineHeight: 1.3 }}>{v.title}</p>
-            <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{v.sub}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Form */}
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 28, marginBottom: 24 }}>
-        <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 18, color: 'var(--text)', marginBottom: 6 }}>Register interest</h2>
-        <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.6 }}>We'll reach out when promoter tools go live. No spam — just a single update when we're ready.</p>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-          <div>
-            {fieldLabel('Full name', true)}
-            <input value={form.fullName} onChange={e => update('fullName', e.target.value)} placeholder="Your full name" style={inputStyle('fullName')} />
-            {errors.fullName && <p style={{ fontSize: 12, color: 'var(--accent-red)', marginTop: 4 }}>{errors.fullName}</p>}
-          </div>
-          <div>
-            {fieldLabel('Email', true)}
-            <input type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="you@company.com" style={inputStyle('email')} />
-            {errors.email && <p style={{ fontSize: 12, color: 'var(--accent-red)', marginTop: 4 }}>{errors.email}</p>}
-          </div>
-          <div>
-            {fieldLabel('Company name', true)}
-            <input value={form.company} onChange={e => update('company', e.target.value)} placeholder="e.g. Live Nation Malaysia" style={inputStyle('company')} />
-            {errors.company && <p style={{ fontSize: 12, color: 'var(--accent-red)', marginTop: 4 }}>{errors.company}</p>}
-          </div>
-          <div>
-            {fieldLabel('Company website')}
-            <input type="url" value={form.url} onChange={e => update('url', e.target.value)} placeholder="https://yourcompany.com" style={inputStyle('url')} />
-          </div>
-        </div>
-
-        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer', marginBottom: 28 }}>
-          <div onClick={() => update('updates', !form.updates)} style={{ width: 20, height: 20, borderRadius: 5, border: `2px solid ${form.updates ? 'var(--accent)' : 'var(--border)'}`, background: form.updates ? 'var(--accent)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2, cursor: 'pointer', transition: 'all 0.15s' }}>
-            {form.updates && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={`var(--bg)`} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-          </div>
-          <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.6 }}>Receive updates about the encore promoter programme, feature launches, and partnership opportunities.</p>
-        </label>
-
-        <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 10, border: 'none', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
-          {loading ? 'Submitting…' : 'Register Interest →'}
-        </button>
-      </div>
-
-      {/* Email fallback */}
-      <div style={{ textAlign: 'center' as const, padding: '20px 24px', border: '1px dashed var(--border)', borderRadius: 'var(--radius)' }}>
-        <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 8 }}>Prefer to reach out directly?</p>
-        <a href="mailto:promoters@encore.app" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--accent)', textDecoration: 'none' }}>promoters@encore.app</a>
-      </div>
-    </div>
-  )
 
   return (
-    <>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+
+      {/* DESKTOP */}
       <div className="hidden lg:block">
         <TopNav />
-        <div style={{ ...S.containerNarrow, paddingTop: 0 }}>
-          <Breadcrumb crumbs={[{ label: 'Home', href: '/' }, { label: 'For Promoters' }]} />
-          <div style={S.pageHeader}>
-            <span style={S.pageLabel}>For Promoters</span>
-            <h1 style={S.pageTitle}>Join encore early.</h1>
-            <p style={S.pageDesc}>encore is building Southeast Asia's most trusted live music platform. Register now and be the first promoter on board when our tools launch.</p>
+        <div style={S.container}>
+          <Breadcrumb crumbs={[{ label: 'Submit a Show' }]} />
+          <div style={{ maxWidth: 640, margin: '0 auto', padding: '40px 0 80px' }}>
+            {step === 'done' ? <DoneState /> : (
+              <>
+                <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 8 }}>Submit a show</h1>
+                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Know about a gig, concert, or festival that's not on encore yet? Add it here. We'll review and publish it within 24 hours.</p>
+
+                {step === 'show' && <ShowForm form={form} set={set} onNext={() => setStep('account')} />}
+                {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
+              </>
+            )}
           </div>
-          {formContent}
         </div>
         <Footer />
       </div>
 
       {/* MOBILE */}
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px 0' }}>
-          <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 20, color: 'var(--accent)' }}>encore</span>
-        </div>
+        <MobileHeader />
         <div style={{ padding: '0 18px' }}>
-          <Breadcrumb crumbs={[{ label: 'Home', href: '/' }, { label: 'For Promoters' }]} />
-          <div style={{ padding: '24px 0 28px', borderBottom: '1px solid var(--border)', marginBottom: 28 }}>
-            <span style={S.pageLabel}>For Promoters</span>
-            <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.15, marginBottom: 10 }}>Join encore early.</h1>
-            <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.65 }}>Register now and be the first promoter on board when our tools launch.</p>
-          </div>
-          {/* Mobile form — single column */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 20, marginBottom: 20 }}>
-            <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 16, color: 'var(--text)', marginBottom: 20 }}>Register interest</h2>
-            {[
-              { field: 'fullName', label: 'Full name', placeholder: 'Your full name', required: true },
-              { field: 'email', label: 'Email', placeholder: 'you@company.com', required: true, type: 'email' },
-              { field: 'company', label: 'Company name', placeholder: 'e.g. Live Nation Malaysia', required: true },
-              { field: 'url', label: 'Company website', placeholder: 'https://yourcompany.com', type: 'url' },
-            ].map(f => (
-              <div key={f.field} style={{ marginBottom: 14 }}>
-                {fieldLabel(f.label, f.required)}
-                <input
-                  type={f.type || 'text'}
-                  value={(form as any)[f.field]}
-                  onChange={e => update(f.field, e.target.value)}
-                  placeholder={f.placeholder}
-                  style={inputStyle(f.field)}
-                />
-                {errors[f.field] && <p style={{ fontSize: 12, color: 'var(--accent-red)', marginTop: 4 }}>{errors[f.field]}</p>}
-              </div>
-            ))}
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer', marginBottom: 24 }}>
-              <div onClick={() => update('updates', !form.updates)} style={{ width: 20, height: 20, borderRadius: 5, border: `2px solid ${form.updates ? 'var(--accent)' : 'var(--border)'}`, background: form.updates ? 'var(--accent)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2, cursor: 'pointer' }}>
-                {form.updates && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-              </div>
-              <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>Receive updates about the encore promoter programme.</p>
-            </label>
-            <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, padding: '14px 0', borderRadius: 10, border: 'none', cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1 }}>
-              {loading ? 'Submitting…' : 'Register Interest →'}
-            </button>
-          </div>
-          <div style={{ textAlign: 'center' as const, padding: '16px 24px', border: '1px dashed var(--border)', borderRadius: 'var(--radius)', marginBottom: 32 }}>
-            <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 6 }}>Or reach out directly</p>
-            <a href="mailto:promoters@encore.app" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--accent)', textDecoration: 'none' }}>promoters@encore.app</a>
-          </div>
+          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 8, paddingTop: 24 }}>Submit a show</h2>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>Know about a gig or concert not on encore yet? Add it here — we'll review and publish within 24 hours.</p>
+
+          {step === 'done' ? <DoneState /> : (
+            <>
+              {step === 'show' && <ShowForm form={form} set={set} onNext={() => setStep('account')} />}
+              {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
+            </>
+          )}
         </div>
+        <MobileFooter />
         <BottomNav />
       </div>
-    </>
+    </div>
+  )
+}
+
+function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => void }) {
+  const canProceed = form.artist && form.venue && form.city
+
+  const fieldStyle = { marginBottom: 20 }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)' }}>1</div>
+        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>Show details</span>
+        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--muted)' }}>2</div>
+        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)' }}>Your account</span>
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Artist / Show name *</label>
+        <input style={INPUT} value={form.artist} onChange={e => set('artist', e.target.value)} placeholder="e.g. Yuna, Good Vibes Festival" />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        <div>
+          <label style={LABEL}>Venue *</label>
+          <input style={INPUT} value={form.venue} onChange={e => set('venue', e.target.value)} placeholder="e.g. Zepp Kuala Lumpur" />
+        </div>
+        <div>
+          <label style={LABEL}>City *</label>
+          <input style={INPUT} value={form.city} onChange={e => set('city', e.target.value)} placeholder="e.g. Kuala Lumpur" />
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        <div>
+          <label style={LABEL}>Country</label>
+          <select style={INPUT} value={form.country} onChange={e => set('country', e.target.value)}>
+            {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={LABEL}>Type</label>
+          <select style={INPUT} value={form.type} onChange={e => set('type', e.target.value)}>
+            {TYPES.map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        <div>
+          <label style={LABEL}>Date</label>
+          <input style={INPUT} type="date" value={form.date} onChange={e => {
+            const d = new Date(e.target.value)
+            const display = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+            set('date', e.target.value)
+            set('date_display', display)
+          }} />
+        </div>
+        <div>
+          <label style={LABEL}>Genre</label>
+          <select style={INPUT} value={form.genre} onChange={e => set('genre', e.target.value)}>
+            <option value="">— Select —</option>
+            {GENRES.map(g => <option key={g}>{g}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        <div>
+          <label style={LABEL}>Ticket price</label>
+          <input style={INPUT} value={form.price} onChange={e => set('price', e.target.value)} placeholder="e.g. From RM88, Free" />
+        </div>
+        <div>
+          <label style={LABEL}>Promoter</label>
+          <input style={INPUT} value={form.promoter} onChange={e => set('promoter', e.target.value)} placeholder="e.g. Livescape" />
+        </div>
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Ticket URL</label>
+        <input style={INPUT} value={form.ticket_url} onChange={e => set('ticket_url', e.target.value)} placeholder="https://..." />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Poster image URL</label>
+        <input style={INPUT} value={form.poster_url} onChange={e => set('poster_url', e.target.value)} placeholder="https://..." />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Supporting acts / Lineup</label>
+        <input style={INPUT} value={form.lineup} onChange={e => set('lineup', e.target.value)} placeholder="e.g. Opening act: Yuna, DJ: JYNX" />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Description</label>
+        <textarea style={{ ...INPUT, resize: 'vertical' as const }} rows={3} value={form.description} onChange={e => set('description', e.target.value)} placeholder="Tell fans about the show..." />
+      </div>
+
+      <button
+        onClick={onNext}
+        disabled={!canProceed}
+        style={{ width: '100%', padding: '13px', background: canProceed ? 'var(--accent)' : 'var(--surface2)', color: canProceed ? 'var(--bg)' : 'var(--muted)', border: 'none', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, cursor: canProceed ? 'pointer' : 'not-allowed', transition: 'all .15s' }}
+      >
+        Next — Your account →
+      </button>
+    </div>
+  )
+}
+
+function AccountForm({ account, setAccount, onBack, onSubmit, loading, error }: any) {
+  function set(field: string, value: string) {
+    setAccount((a: any) => ({ ...a, [field]: value }))
+  }
+
+  const fieldStyle = { marginBottom: 20 }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--muted)' }}>1</div>
+        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)' }}>Show details</span>
+        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)' }}>2</div>
+        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>Your account</span>
+      </div>
+
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '14px 16px', marginBottom: 28 }}>
+        <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>Create a free encore account to track your submission and write reviews. Already have one? Enter the same email and password to sign in.</p>
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Your name</label>
+        <input style={INPUT} value={account.name} onChange={e => set('name', e.target.value)} placeholder="First name or username" />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Email *</label>
+        <input style={INPUT} type="email" value={account.email} onChange={e => set('email', e.target.value)} placeholder="you@email.com" />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Password *</label>
+        <input style={INPUT} type="password" value={account.password} onChange={e => set('password', e.target.value)} placeholder="Min. 6 characters" />
+      </div>
+
+      <div style={fieldStyle}>
+        <label style={LABEL}>Anything else we should know?</label>
+        <textarea style={{ ...INPUT, resize: 'vertical' as const }} rows={2} value={account.submitter_note} onChange={e => set('submitter_note', e.target.value)} placeholder="Source link, social media, notes for the team..." />
+      </div>
+
+      {error && <p style={{ fontSize: 13, color: '#f87171', marginBottom: 16 }}>{error}</p>}
+
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button onClick={onBack} style={{ padding: '13px 20px', background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--muted)', cursor: 'pointer' }}>
+          ← Back
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={loading || !account.email || !account.password}
+          style={{ flex: 1, padding: '13px', background: (!loading && account.email && account.password) ? 'var(--accent)' : 'var(--surface2)', color: (!loading && account.email && account.password) ? 'var(--bg)' : 'var(--muted)', border: 'none', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all .15s' }}
+        >
+          {loading ? 'Submitting…' : 'Submit show →'}
+        </button>
+      </div>
+
+      <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center' as const, marginTop: 16, lineHeight: 1.6 }}>
+        By submitting you agree to encore's{' '}
+        <Link href="/legal/terms" style={{ color: 'var(--accent)' }}>Terms of Service</Link>.
+        Submissions are reviewed before publishing.
+      </p>
+    </div>
+  )
+}
+
+function DoneState() {
+  return (
+    <div style={{ textAlign: 'center' as const, padding: '48px 0' }}>
+      <div style={{ fontSize: 48, marginBottom: 20 }}>🎉</div>
+      <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 12 }}>Show submitted!</h2>
+      <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 32, lineHeight: 1.7, maxWidth: 400, margin: '0 auto 32px' }}>
+        We'll review and publish your submission within 24 hours. Check your email for confirmation.
+      </p>
+      <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+        <Link href="/events" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--bg)', background: 'var(--accent)', textDecoration: 'none', padding: '12px 24px', borderRadius: 10 }}>Browse upcoming shows</Link>
+        <Link href="/submit" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--muted)', background: 'var(--surface2)', border: '1px solid var(--border)', textDecoration: 'none', padding: '12px 24px', borderRadius: 10 }}>Submit another</Link>
+      </div>
+    </div>
   )
 }

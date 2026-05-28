@@ -525,8 +525,8 @@ export function Footer() {
           <Link href="/submit" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 8, padding: '9px 16px', textDecoration: 'none' }}>Submit a Show →</Link>
         </div>
         {[
-          { title: 'Platform', links: [{ label: 'Reviews', href: '/reviews' }, { label: 'Upcoming Shows', href: '/events' }, { label: 'Blog', href: '/blog' }, { label: 'Submit a Show', href: '/submit' }] },
-          { title: 'Company', links: [{ label: 'About encore', href: '/about' }, { label: 'Contact us', href: '/contact' }, { label: 'For Organisers', href: '/submit' }] },
+          { title: 'Platform', links: [{ label: 'Reviews', href: '/reviews' }, { label: 'Upcoming Shows', href: '/events' }, { label: 'Blog', href: '/blog' }, { label: 'Submit a Show', href: '/promoters' }] },
+          { title: 'Company', links: [{ label: 'About encore', href: '/about' }, { label: 'Contact us', href: '/contact' }, { label: 'For Promoters', href: '/promoters' }] },
           { title: 'Legal', links: [{ label: 'Terms of Service', href: '/legal/terms' }, { label: 'Privacy Policy', href: '/legal/privacy' }, { label: 'Cookie Policy', href: '/legal/cookies' }] },
         ].map(col => (
           <div key={col.title}>
