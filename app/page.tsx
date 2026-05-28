@@ -106,7 +106,7 @@ export default function HomePage() {
           <div style={{ position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)', width: 600, height: 600, background: 'radial-gradient(circle,rgba(123,97,255,.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Southeast Asia's live music community</span>
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 52, color: 'white', lineHeight: 1.08, letterSpacing: '-.02em', marginBottom: 16 }}>
-            <span style={{ color: 'var(--text)' }}>Was it worth</span><br /><span style={{ color: 'var(--accent)' }}>showing up?</span>
+            <span style={{ color: 'white' }}>Was it worth</span><br /><span style={{ color: 'var(--accent)' }}>showing up?</span>
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
             Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.
@@ -301,7 +301,7 @@ export default function HomePage() {
         {/* Mobile hero */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderBottom: '1px solid var(--border)', padding: '36px 20px 32px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 14 }}>Southeast Asia's live music community</span>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}><span style={{ color: 'var(--text)' }}>Was it worth</span> <span style={{ color: 'var(--accent)' }}>showing up?</span></h1>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}><span style={{ color: 'white' }}>Was it worth</span> <span style={{ color: 'var(--accent)' }}>showing up?</span></h1>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.</p>
           <form onSubmit={handleSearch} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
