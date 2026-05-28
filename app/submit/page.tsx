@@ -147,17 +147,17 @@ function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => vo
 
       <div style={fieldStyle}>
         <label style={LABEL}>Artist / Show name *</label>
-        <input style={INPUT} value={form.artist} onChange={e => set('artist', e.target.value)} placeholder="e.g. Yuna, Good Vibes Festival" />
+        <input style={INPUT} value={form.artist} onChange={e => set('artist', e.target.value)} placeholder="Artist or event name" />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
           <label style={LABEL}>Venue *</label>
-          <input style={INPUT} value={form.venue} onChange={e => set('venue', e.target.value)} placeholder="e.g. Zepp Kuala Lumpur" />
+          <input style={INPUT} value={form.venue} onChange={e => set('venue', e.target.value)} placeholder="Venue name" />
         </div>
         <div>
           <label style={LABEL}>City *</label>
-          <input style={INPUT} value={form.city} onChange={e => set('city', e.target.value)} placeholder="e.g. Kuala Lumpur" />
+          <input style={INPUT} value={form.city} onChange={e => set('city', e.target.value)} placeholder="City" />
         </div>
       </div>
 
@@ -198,11 +198,11 @@ function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => vo
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
           <label style={LABEL}>Ticket price</label>
-          <input style={INPUT} value={form.price} onChange={e => set('price', e.target.value)} placeholder="e.g. From RM88, Free" />
+          <input style={INPUT} value={form.price} onChange={e => set('price', e.target.value)} placeholder="Ticket price" />
         </div>
         <div>
           <label style={LABEL}>Promoter</label>
-          <input style={INPUT} value={form.promoter} onChange={e => set('promoter', e.target.value)} placeholder="e.g. Livescape" />
+          <input style={INPUT} value={form.promoter} onChange={e => set('promoter', e.target.value)} placeholder="Promoter or organiser" />
         </div>
       </div>
 
@@ -218,7 +218,7 @@ function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => vo
 
       <div style={fieldStyle}>
         <label style={LABEL}>Supporting acts / Lineup</label>
-        <input style={INPUT} value={form.lineup} onChange={e => set('lineup', e.target.value)} placeholder="e.g. Opening act: Yuna, DJ: JYNX" />
+        <input style={INPUT} value={form.lineup} onChange={e => set('lineup', e.target.value)} placeholder="Supporting acts, lineup" />
       </div>
 
       <div style={fieldStyle}>
@@ -260,7 +260,7 @@ function AccountForm({ account, setAccount, onBack, onSubmit, loading, error }: 
 
       <div style={fieldStyle}>
         <label style={LABEL}>Your name</label>
-        <input style={INPUT} value={account.name} onChange={e => set('name', e.target.value)} placeholder="First name or username" />
+        <input style={INPUT} value={account.name} onChange={e => set('name', e.target.value)} placeholder="Your name" />
       </div>
 
       <div style={fieldStyle}>

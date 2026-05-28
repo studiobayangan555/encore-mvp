@@ -89,14 +89,14 @@ export default function PromotersPage() {
                     </div>
                     <div>
                       <label style={LABEL}>Email *</label>
-                      <input style={INPUT} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@company.com" />
+                      <input style={INPUT} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email address" />
                     </div>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
                     <div>
                       <label style={LABEL}>Company name *</label>
-                      <input style={INPUT} value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} placeholder="e.g. Livescape Asia" />
+                      <input style={INPUT} value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} placeholder="Company name" />
                     </div>
                     <div>
                       <label style={LABEL}>Company website</label>
@@ -166,11 +166,11 @@ export default function PromotersPage() {
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={LABEL}>Email *</label>
-                <input style={INPUT} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@company.com" />
+                <input style={INPUT} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email address" />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={LABEL}>Company name *</label>
-                <input style={INPUT} value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} placeholder="e.g. Livescape Asia" />
+                <input style={INPUT} value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} placeholder="Company name" />
               </div>
               <div style={{ marginBottom: 20 }}>
                 <label style={LABEL}>Company website</label>
