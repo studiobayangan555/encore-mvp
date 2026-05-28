@@ -94,7 +94,7 @@ export default function HomePage() {
         {bannerVisible && (
           <div style={{ background: '#1a0033', borderBottom: '1px solid rgba(232,255,71,0.2)', padding: '10px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <p style={{ fontSize: 13, color: 'rgba(232,236,244,0.8)', margin: 0 }}>
-              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — Coverage currently for Malaysia, with a roadmap to Southeast Asia.  
+              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — currently covering Malaysia. Singapore, Thailand, Indonesia & the Philippines coming in the next 4–6 weeks.
             </p>
             <button onClick={dismissBanner} style={{ background: 'none', border: 'none', color: 'rgba(232,236,244,0.5)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}>✕</button>
           </div>
@@ -106,10 +106,10 @@ export default function HomePage() {
           <div style={{ position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)', width: 600, height: 600, background: 'radial-gradient(circle,rgba(123,97,255,.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Southeast Asia's live music community</span>
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 52, color: 'white', lineHeight: 1.08, letterSpacing: '-.02em', marginBottom: 16 }}>
-            Was it worth<br />showing <span style={{ color: 'var(--accent)' }}>up?</span>
+            <span style={{ color: 'var(--text)' }}>Was it worth</span><br /><span style={{ color: 'var(--accent)' }}>showing up?</span>
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
-            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.
+            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one. Singapore, Thailand, Indonesia & the Philippines coming in 4–6 weeks.
           </p>
           {/* Hero search */}
           <form onSubmit={handleSearch} style={{ maxWidth: 700, margin: '0 auto 28px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 14, overflow: 'hidden', height: 62, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
@@ -125,14 +125,14 @@ export default function HomePage() {
               Search
             </button>
           </form>
-          {/* <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' as const }}>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' as const }}>
             {['★ Top rated','🔥 Trending in KL','K-pop','Festivals 2026','Singapore','Gigs this week'].map(tag => (
               <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} style={{ fontSize: 12, color: 'var(--muted)', background: 'rgba(255,255,255,.04)', border: '1px solid var(--border)', padding: '5px 14px', borderRadius: 100, textDecoration: 'none', transition: 'all .15s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--muted)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)' }}
               >{tag}</Link>
             ))}
-          </div> */}
+          </div>
         </section>
 
         {/* 2. REVIEWS */}
@@ -272,23 +272,23 @@ export default function HomePage() {
         <section style={{ background: 'linear-gradient(135deg,#0D0A1A 0%,#1a0033 50%,#080A0F 100%)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '96px 48px', textAlign: 'center' as const, position: 'relative', overflow: 'hidden' }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Join the community</span>
           <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 40, color: 'white', lineHeight: 1.1, letterSpacing: '-.02em', maxWidth: 680, margin: '0 auto 16px' }}>
-            Your opinion matters more than<br />any <span style={{ color: 'var(--accent)' }}>review site.</span>
+            You were there.<br /><span style={{ color: 'var(--accent)' }}>Write it down.</span>
           </h2>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 520, margin: '0 auto 48px', lineHeight: 1.7 }}>
-            You were in the crowd. You know how it actually felt. Write it down — help the next fan decide. 
+            You were in the crowd. You know how it actually felt. Write it down — help the next fan decide. Free, forever.
           </p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 15, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 12, padding: '16px 48px', textDecoration: 'none', marginBottom: 16, transition: 'opacity .15s' }}>
             Create a free account →
           </Link>
-          <p style={{ fontSize: 13, color: 'rgba(232,236,244,.4)', marginBottom: 52 }}>No spam · Unsubscribe any time</p>
-          {/* <div style={{ display: 'flex', gap: 56, justifyContent: 'center', flexWrap: 'wrap' as const }}>
+          <p style={{ fontSize: 13, color: 'rgba(232,236,244,.4)', marginBottom: 52 }}>Free forever · No spam · Unsubscribe any time</p>
+          <div style={{ display: 'flex', gap: 56, justifyContent: 'center', flexWrap: 'wrap' as const }}>
             {[['5','Countries'],['350+','Shows reviewed'],['2,400+','Fan reviews'],['100%','Fan written']].map(([num, label]) => (
               <div key={label} style={{ textAlign: 'center' as const }}>
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--accent)', lineHeight: 1 }}>{num}</p>
                 <p style={{ fontSize: 13, color: 'rgba(232,236,244,.5)', marginTop: 6 }}>{label}</p>
               </div>
             ))}
-          </div> */} 
+          </div>
         </section>
 
         <Footer />
@@ -309,7 +309,7 @@ export default function HomePage() {
         {/* Mobile hero */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderBottom: '1px solid var(--border)', padding: '36px 20px 32px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 14 }}>Southeast Asia's live music community</span>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}>Was it worth <span style={{ color: 'var(--accent)' }}>showing up?</span></h1>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'white', lineHeight: 1.1, marginBottom: 10 }}><span style={{ color: 'var(--text)' }}>Was it worth</span> <span style={{ color: 'var(--accent)' }}>showing up?</span></h1>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 24, lineHeight: 1.65 }}>Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.</p>
           <form onSubmit={handleSearch} style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
@@ -413,10 +413,10 @@ export default function HomePage() {
         {/* Mobile signup */}
         <div style={{ background: 'linear-gradient(135deg,#0D0A1A,#1a0033,#080A0F)', borderTop: '1px solid var(--border)', padding: '52px 20px', textAlign: 'center' as const }}>
           <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 16 }}>Join the community</span>
-          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>Did they really deserve an<span style={{ color: 'var(--accent)' }}>encore?</span></h2>
+          <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 24, color: 'white', lineHeight: 1.15, marginBottom: 12 }}>You were there. <span style={{ color: 'var(--accent)' }}>Write it down.</span></h2>
           <p style={{ fontSize: 14, color: 'rgba(232,236,244,.55)', marginBottom: 28, lineHeight: 1.7 }}>You were in the crowd. You know how it actually felt. Write it down — help the next fan decide.</p>
           <Link href="/auth/login" style={{ display: 'inline-block', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--bg)', background: 'var(--accent)', borderRadius: 10, padding: '14px 36px', textDecoration: 'none', marginBottom: 12 }}>Create a free account →</Link>
-          <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}></p>
+          <p style={{ fontSize: 12, color: 'rgba(232,236,244,.35)' }}>Free forever · No spam</p>
           <div style={{ display: 'flex', gap: 24, justifyContent: 'center', marginTop: 36, flexWrap: 'wrap' as const }}>
             {[['5','Countries'],['350+','Shows'],['100%','Fan written']].map(([num, label]) => (
               <div key={label} style={{ textAlign: 'center' as const }}>
