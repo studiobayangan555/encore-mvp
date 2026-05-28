@@ -40,7 +40,7 @@ export default function PromotersPage() {
   const features = [
     { icon: '🌏', title: 'Reach fans across SEA', desc: 'Malaysia, Singapore, Thailand, Indonesia, Philippines' },
     { icon: '★', title: 'Build your reputation', desc: 'Fan reviews create lasting trust in your events' },
-    { icon: '📊', title: 'Audience insights', desc: 'See who's going, what fans are saying, how shows perform' },
+    { icon: '📊', title: 'Audience insights', desc: "See who's going, what fans are saying, how shows perform" },
     { icon: '🚀', title: 'Early access', desc: 'First access to promoter tools when they launch' },
   ]
 
