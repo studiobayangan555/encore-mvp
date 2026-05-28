@@ -1,5 +1,9 @@
 /* ─── ENCORE GLOBAL CSS ─────────────────────────────────────────────────────── */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg: #080A0F;
   --surface: #0F1219;
