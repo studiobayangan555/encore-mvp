@@ -1,5 +1,3 @@
-/* ─── ENCORE GLOBAL CSS ─────────────────────────────────────────────────────── */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,19 +22,15 @@
   --border: #D8DCE6;
   --text: #0D1117;
   --muted: rgba(13,17,23,0.5);
-  --accent: #1A1A2E;
-  --nav-bg: rgba(244,245,247,0.9);
-  --shadow: 0 4px 24px rgba(0,0,0,0.1);
+  --accent: #E8FF47;
+  --nav-bg: rgba(244,245,247,0.92);
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -48,59 +42,9 @@ body {
   transition: background 0.2s, color 0.2s;
 }
 
-/* Light mode — accent colour override to stay readable */
-[data-theme="light"] .accent-text {
-  color: #4B0082;
-}
-
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* Remove default button/input styles */
-button { cursor: pointer; }
-input, textarea, select {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  color: var(--text);
-}
-
-/* Light mode specific overrides */
-[data-theme="light"] input,
-[data-theme="light"] textarea,
-[data-theme="light"] select {
-  color: var(--text);
-  background: var(--surface);
-}
-
-[data-theme="light"] input::placeholder,
-[data-theme="light"] textarea::placeholder {
-  color: var(--muted);
-}
-
-/* Nav */
-[data-theme="light"] nav {
-  border-color: var(--border);
-}
-
-/* Cards and surfaces */
-[data-theme="light"] .card {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-/* Hide scrollbars on mobile */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* Ensure accent yellow is visible in light mode */
-[data-theme="light"] [style*="var(--accent)"] {
-  color: #2D0060 !important;
-}
-
-[data-theme="light"] [style*="background: var(--accent)"],
-[data-theme="light"] [style*="background:var(--accent)"] {
-  background: #2D0060 !important;
-  color: #FFFFFF !important;
-}
