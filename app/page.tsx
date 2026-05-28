@@ -94,7 +94,7 @@ export default function HomePage() {
         {bannerVisible && (
           <div style={{ background: '#1a0033', borderBottom: '1px solid rgba(232,255,71,0.2)', padding: '10px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <p style={{ fontSize: 13, color: 'rgba(232,236,244,0.8)', margin: 0 }}>
-              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — currently covering Malaysia. Singapore, Thailand, Indonesia & the Philippines coming in the next 4–6 weeks.
+              🚧 <strong style={{ color: 'var(--accent)' }}>encore is in early access</strong> — Covering Malaysia only. Rest of SEA in the roadmap. 
             </p>
             <button onClick={dismissBanner} style={{ background: 'none', border: 'none', color: 'rgba(232,236,244,0.5)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}>✕</button>
           </div>
@@ -109,8 +109,7 @@ export default function HomePage() {
             <span style={{ color: 'var(--text)' }}>Was it worth</span><br /><span style={{ color: 'var(--accent)' }}>showing up?</span>
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(232,236,244,.55)', maxWidth: 540, margin: '0 auto 44px', lineHeight: 1.7 }}>
-            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one. Singapore, Thailand, Indonesia & the Philippines coming in 4–6 weeks.
-          </p>
+            Fan reviews of concerts, gigs, and festivals across Malaysia. Find your next show — or relive the last one.
           {/* Hero search */}
           <form onSubmit={handleSearch} style={{ maxWidth: 700, margin: '0 auto 28px', display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 14, overflow: 'hidden', height: 62, boxShadow: '0 8px 40px rgba(0,0,0,.4)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(232,236,244,.4)" strokeWidth="2" strokeLinecap="round" style={{ marginLeft: 20, flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
