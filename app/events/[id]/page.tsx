@@ -69,10 +69,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     if (!user) { window.location.href = '/auth/login'; return }
     if (!going) {
       await supabase.from('saved_shows').upsert({
-        user_id: user.id, show_id: show.id, status: 'going'
+        user_id: user.id, show_id: show?.id, status: 'going'
       }, { onConflict: 'user_id,show_id' })
     } else {
-      await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: show.id })
+      await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: show?.id })
     }
     setGoing(!going)
     setSavingLoading(false)
@@ -85,9 +85,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { window.location.href = '/auth/login'; return }
     if (!saved) {
-      await supabase.from('saved_shows').insert({ user_id: user.id, show_id: show.id })
+      await supabase.from('saved_shows').insert({ user_id: user.id, show_id: show?.id })
     } else {
-      await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: show.id })
+      await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: show?.id })
     }
     setSaved(!saved)
     setSavingLoading(false)
@@ -114,13 +114,13 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     )
   }
 
-  const RatingSummary = () => show.is_past ? (
+  const RatingSummary = () => show?.is_past ? (
     <div style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 12, padding: '18px 20px', flex: 1 }}>
       <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
         <div style={{ textAlign: 'center' as const, flexShrink: 0 }}>
-          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 900, fontSize: 48, color: 'var(--accent)', lineHeight: 1 }}>{show.avg_rating.toFixed(1)}</p>
-          <Stars rating={show.avg_rating} size={15} />
-          <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>{show.review_count} reviews</p>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 900, fontSize: 48, color: 'var(--accent)', lineHeight: 1 }}>{show?.avg_rating.toFixed(1)}</p>
+          <Stars rating={show?.avg_rating} size={15} />
+          <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>{show?.review_count} reviews</p>
         </div>
         <div style={{ flex: 1 }}>
           {[5,4,3,2,1].map(star => {
@@ -156,8 +156,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   const ActionButtons = ({ stacked = false }: { stacked?: boolean }) => (
     <div style={{ display: 'flex', flexDirection: stacked ? 'column' : 'row', gap: 10 }}>
-      {show.is_past ? (
-        <Link href={`/events/${show.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', display: 'block' }}>Write A Review</Link>
+      {show?.is_past ? (
+        <Link href={`/events/${show?.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', display: 'block' }}>Write A Review</Link>
       ) : (
         <>
           <button style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: 'none', cursor: 'pointer' }}>Going</button>
@@ -170,7 +170,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   const TabBar = () => (
     <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', marginBottom: 28 }}>
-      {([['reviews', `Reviews (${show.review_count})`], ['overview', 'Overview'], ['comments', `Comments (${comments.length})`]] as const).map(([key, label]) => (
+      {([['reviews', `Reviews (${show?.review_count})`], ['overview', 'Overview'], ['comments', `Comments (${comments.length})`]] as const).map(([key, label]) => (
         <button key={key} onClick={() => setActiveTab(key)} style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: activeTab === key ? 'var(--text)' : 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '13px 0', marginRight: 28, borderBottom: activeTab === key ? '2px solid var(--accent)' : '2px solid transparent', whiteSpace: 'nowrap' as const }}>{label}</button>
       ))}
     </div>
@@ -189,7 +189,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           </div>
         )}
         {show?.is_past && (
-          <Link href={`/events/${show.id}/review`} style={{ display: 'block', border: '1px solid var(--accent)', color: 'var(--accent)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 0', borderRadius: 10, textDecoration: 'none', marginBottom: 24 }}>Write a Review</Link>
+          <Link href={`/events/${show?.id}/review`} style={{ display: 'block', border: '1px solid var(--accent)', color: 'var(--accent)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 0', borderRadius: 10, textDecoration: 'none', marginBottom: 24 }}>Write a Review</Link>
         )}
         {reviews.map(r => {
           const authorName = r.profiles?.display_name || 'Fan'
@@ -227,10 +227,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             </div>
           )
         })}
-        {reviews.length === 0 && show.is_past && (
+        {reviews.length === 0 && show?.is_past && (
           <div style={{ textAlign: 'center' as const, padding: '40px 0' }}>
             <p style={{ fontSize: 15, color: 'var(--muted)', marginBottom: 16 }}>No reviews yet — be the first.</p>
-            <Link href={`/events/${show.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '12px 24px', borderRadius: 10, textDecoration: 'none' }}>Write a Review</Link>
+            <Link href={`/events/${show?.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '12px 24px', borderRadius: 10, textDecoration: 'none' }}>Write a Review</Link>
           </div>
         )}
       </div>
@@ -242,20 +242,20 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       <div>
         <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border)', marginBottom: 22 }}>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 12 }}>About This Show</p>
-          <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.8 }}>{show.description}</p>
+          <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.8 }}>{show?.description}</p>
         </div>
         <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border)', marginBottom: 22 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)' }}>Lineup</p>
-            {(show.lineup_url || show.ticket_url) && (
-              <a href={show.lineup_url || show.ticket_url || '#'} target="_blank" rel="noopener" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 10, color: 'var(--accent)', textDecoration: 'none' }}>Full lineup →</a>
+            {(show?.lineup_url || show?.ticket_url) && (
+              <a href={show?.lineup_url || show?.ticket_url || '#'} target="_blank" rel="noopener" style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 10, color: 'var(--accent)', textDecoration: 'none' }}>Full lineup →</a>
             )}
           </div>
           {(() => {
             // Use real lineup if available, otherwise fall back to artist as headliner
-            const acts = (show.lineup && show.lineup.length > 0)
-              ? show.lineup.slice(0, LINEUP_LIMIT)
-              : [{ name: show.artist, role: 'Headliner' }]
+            const acts = (show?.lineup && show?.lineup.length > 0)
+              ? show?.lineup.slice(0, LINEUP_LIMIT)
+              : [{ name: show?.artist, role: 'Headliner' }]
             return (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
                 {acts.map((act, i) => (
@@ -270,23 +270,23 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               </div>
             )
           })()}
-          {show.lineup && show.lineup.length >= LINEUP_LIMIT && (show.lineup_url || show.ticket_url) && (
-            <a href={show.lineup_url || show.ticket_url || '#'} target="_blank" rel="noopener" style={{ display: 'block', textAlign: 'center' as const, marginTop: 12, fontSize: 13, color: 'var(--accent)', textDecoration: 'none' }}>View full lineup →</a>
+          {show?.lineup && show?.lineup.length >= LINEUP_LIMIT && (show?.lineup_url || show?.ticket_url) && (
+            <a href={show?.lineup_url || show?.ticket_url || '#'} target="_blank" rel="noopener" style={{ display: 'block', textAlign: 'center' as const, marginTop: 12, fontSize: 13, color: 'var(--accent)', textDecoration: 'none' }}>View full lineup →</a>
           )}
         </div>
         {!show?.is_past && (
           <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border)', marginBottom: 22 }}>
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 12 }}>Tickets</p>
-            <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 16 }}>Starting {show.price}</p>
-            <a href={show.ticket_url || '#'} target="_blank" rel="noopener" style={{ display: 'block', background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center' as const, padding: '13px 0', borderRadius: 10, textDecoration: 'none' }}>Buy Tickets →</a>
+            <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 16 }}>Starting {show?.price}</p>
+            <a href={show?.ticket_url || '#'} target="_blank" rel="noopener" style={{ display: 'block', background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center' as const, padding: '13px 0', borderRadius: 10, textDecoration: 'none' }}>Buy Tickets →</a>
           </div>
         )}
         <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border)', marginBottom: 22 }}>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 12 }}>Venue</p>
-          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{show.venue}</p>
-          <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 6 }}>{show.venue_address}</p>
-          {show.venue_transport && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>🚇 {show.venue_transport}</p>}
-          {show.venue_maps_url && <a href={show.venue_maps_url} target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none' }}>Open in Maps →</a>}
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{show?.venue}</p>
+          <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 6 }}>{show?.venue_address}</p>
+          {show?.venue_transport && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 10 }}>🚇 {show?.venue_transport}</p>}
+          {show?.venue_maps_url && <a href={show?.venue_maps_url} target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--accent)', textDecoration: 'none' }}>Open in Maps →</a>}
         </div>
       </div>
     )
@@ -295,11 +295,11 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   const LeftSidebar = () => (
     <aside>
       <div style={{ position: 'sticky', top: 80 }}>
-        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show.artist} clickable style={{ width: '100%', aspectRatio: '2/3', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 16 }}>
+        <ShowPoster posterUrl={show?.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show?.artist} clickable style={{ width: '100%', aspectRatio: '2/3', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 16 }}>
           
         </ShowPoster>
         <AdSpot />
-        {show.promoter && <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 12, marginTop: 4 }}>Other Events by "{show.promoter}"</p>}
+        {show?.promoter && <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 12, marginTop: 4 }}>Other Events by "{show?.promoter}"</p>}
         {promoterShows.length === 0 ? <p style={{ fontSize: 13, color: 'var(--muted)' }}>No other events listed.</p> : promoterShows.map(s => (
           <Link key={s.id} href={`/events/${s.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
@@ -309,13 +309,13 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             </div>
           </Link>
         ))}
-        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', margin: '24px 0 12px' }}>{show.is_past ? 'Trending Reviews' : 'Trending Upcoming'}</p>
+        <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', margin: '24px 0 12px' }}>{show?.is_past ? 'Trending Reviews' : 'Trending Upcoming'}</p>
         {trendingShows.map(s => (
           <Link key={s.id} href={`/events/${s.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
             <div>
               <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--text)', lineHeight: 1.3 }}>{s.artist}</p>
-              <p style={{ fontSize: 11, color: 'var(--muted)' }}>{show.is_past ? `${s.review_count} reviews` : s.date_display}</p>
+              <p style={{ fontSize: 11, color: 'var(--muted)' }}>{show?.is_past ? `${s.review_count} reviews` : s.date_display}</p>
             </div>
           </Link>
         ))}
@@ -328,19 +328,19 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       <div className="hidden lg:block">
         <TopNav />
         <div style={S.container}>
-          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show.artist }]} />
+          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show?.artist }]} />
           <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, paddingTop: 8 }}>
             <LeftSidebar />
             <main>
-              <div style={{ marginBottom: 6 }}><EventBadge type={show.type} /></div>
-              <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 36, color: 'var(--text)', lineHeight: 1.1, margin: '10px 0 12px' }}>{show.artist}</h1>
-              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show.venue}, {show.city}</p>
-              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-              {show.promoter && <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>By {show.promoter}</p>}
+              <div style={{ marginBottom: 6 }}><EventBadge type={show?.type} /></div>
+              <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 36, color: 'var(--text)', lineHeight: 1.1, margin: '10px 0 12px' }}>{show?.artist}</h1>
+              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show?.venue}, {show?.city}</p>
+              <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{show?.date_display}</p>
+              {show?.promoter && <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 24 }}>By {show?.promoter}</p>}
               <div style={{ display: 'flex', gap: 20, marginBottom: 28, alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 200, maxWidth: 220 }}>
-                  {show.is_past ? (
-                    <Link href={`/events/${show.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', display: 'block', marginBottom: 12 }}>Write A Review</Link>
+                  {show?.is_past ? (
+                    <Link href={`/events/${show?.id}/review`} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', display: 'block', marginBottom: 12 }}>Write A Review</Link>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
                       <button onClick={toggleGoing} style={{ background: going ? 'rgba(var(--accent-rgb),0.15)' : 'var(--accent)', color: going ? 'var(--accent)' : 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: going ? '1px solid var(--accent)' : 'none', cursor: 'pointer' }}>{going ? '✓ Going' : 'Going'}</button>
@@ -348,7 +348,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       <button style={{ background: 'transparent', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, padding: '13px 20px', borderRadius: 10, border: '1px solid var(--border)', cursor: 'pointer' }}>Share</button>
                     </div>
                   )}
-                  {show.is_past && <>
+                  {show?.is_past && <>
 
                     <MetaField label="Est. Attendance" value="Fan submitted" />
                   </>}
@@ -358,8 +358,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <TabBar />
               {activeTab === 'reviews' && <ReviewsTab />}
               {activeTab === 'overview' && <OverviewTab />}
-              {activeTab === 'comments' && <CommentsSection targetId={show.id} initialComments={comments as any} />}
-              <ShareBar title={`${show.artist} at ${show.venue}`} url={url} />
+              {activeTab === 'comments' && <CommentsSection targetId={show?.id} initialComments={comments as any} />}
+              <ShareBar title={`${show?.artist} at ${show?.venue}`} url={url} />
             </main>
           </div>
         </div>
@@ -369,25 +369,25 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       {/* MOBILE */}
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
-        <ShowPoster posterUrl={show.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show.artist} clickable style={{ width: '100%', aspectRatio: '16/9', position: 'relative' }}>
-          {!show.poster_url && <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>Poster image</p>}
+        <ShowPoster posterUrl={show?.poster_url} gradient='linear-gradient(160deg,#1a0033,#6600cc,#4400aa)' title={show?.artist} clickable style={{ width: '100%', aspectRatio: '16/9', position: 'relative' }}>
+          {!show?.poster_url && <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>Poster image</p>}
           <button onClick={() => router.back()} style={{ position: 'absolute', top: 12, left: 14, background: 'rgba(8,10,15,.65)', backdropFilter: 'blur(6px)', border: 'none', borderRadius: 8, padding: '8px 10px', cursor: 'pointer', color: 'white', display: 'flex' }}>
             <ArrowLeft size={16} />
           </button>
         </ShowPoster>
         <div style={{ padding: '16px 18px 0' }}>
-          <div style={{ marginBottom: 4 }}><EventBadge type={show.type} /></div>
-          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, margin: '8px 0 8px' }}>{show.artist}</h1>
-          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 3 }}>{show.venue}, {show.city}</p>
-          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{show.date_display}</p>
-          {show.promoter && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 20 }}>By {show.promoter}</p>}
+          <div style={{ marginBottom: 4 }}><EventBadge type={show?.type} /></div>
+          <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, margin: '8px 0 8px' }}>{show?.artist}</h1>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 3 }}>{show?.venue}, {show?.city}</p>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{show?.date_display}</p>
+          {show?.promoter && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 20 }}>By {show?.promoter}</p>}
           <div style={{ marginBottom: 20 }}><ActionButtons stacked /></div>
           <div style={{ marginBottom: 20 }}><RatingSummary /></div>
           <TabBar />
           {activeTab === 'reviews' && <ReviewsTab />}
           {activeTab === 'overview' && <OverviewTab />}
-          {activeTab === 'comments' && <CommentsSection targetId={show.id} initialComments={comments as any} />}
-          <ShareBar title={`${show.artist} at ${show.venue}`} url={url} />
+          {activeTab === 'comments' && <CommentsSection targetId={show?.id} initialComments={comments as any} />}
+          <ShareBar title={`${show?.artist} at ${show?.venue}`} url={url} />
           <MobileFooter />
         </div>
         <BottomNav />
