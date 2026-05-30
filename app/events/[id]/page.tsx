@@ -193,7 +193,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         )}
         {reviews.map(r => {
           const authorName = r.profiles?.display_name || 'Fan'
-          const initials = authorName.slice(0,2).toUpperCase()
+          const initials = (authorName || "??").slice(0,2).toUpperCase()
           return (
             <div key={r.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24, marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
@@ -218,9 +218,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   ))}
                 </div>
               )}
-              {r.vibes.length > 0 && (
+              {r.vibes && r.vibes.length > 0 && (
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const, marginBottom: 4 }}>
-                  {r.vibes.map(v => <span key={v} style={{ fontSize: 12, color: 'var(--accent)', background: 'rgba(var(--accent-rgb),0.1)', border: '1px solid rgba(var(--accent-rgb),0.2)', padding: '3px 10px', borderRadius: 100 }}>{v}</span>)}
+                  {(r.vibes || []).map(v => <span key={v} style={{ fontSize: 12, color: 'var(--accent)', background: 'rgba(var(--accent-rgb),0.1)', border: '1px solid rgba(var(--accent-rgb),0.2)', padding: '3px 10px', borderRadius: 100 }}>{v}</span>)}
                 </div>
               )}
               <VoteBar targetId={r.id} targetType="review" />
@@ -260,7 +260,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
                 {acts.map((act, i) => (
                   <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
-                    <Avatar initials={act.name.slice(0,2).toUpperCase()} size={40} />
+                    <Avatar initials={(act.name || "??").slice(0,2).toUpperCase()} size={40} />
                     <div>
                       <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--text)', lineHeight: 1.3 }}>{act.name}</p>
                       <p style={{ fontSize: 11, color: 'var(--muted)' }}>{act.role}</p>
