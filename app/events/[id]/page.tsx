@@ -179,7 +179,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   function ReviewsTab() {
     return (
       <div>
-        {!show.is_past && (
+        {!show?.is_past && (
           <div style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' as const, gap: 12 }}>
             <p style={{ fontSize: 14, color: 'var(--muted)' }}>This is an upcoming show — reviews open when the event commences.</p>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -188,7 +188,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             </div>
           </div>
         )}
-        {show.is_past && (
+        {show?.is_past && (
           <Link href={`/events/${show.id}/review`} style={{ display: 'block', border: '1px solid var(--accent)', color: 'var(--accent)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, textAlign: 'center', padding: '13px 0', borderRadius: 10, textDecoration: 'none', marginBottom: 24 }}>Write a Review</Link>
         )}
         {reviews.map(r => {
@@ -274,7 +274,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             <a href={show.lineup_url || show.ticket_url || '#'} target="_blank" rel="noopener" style={{ display: 'block', textAlign: 'center' as const, marginTop: 12, fontSize: 13, color: 'var(--accent)', textDecoration: 'none' }}>View full lineup →</a>
           )}
         </div>
-        {!show.is_past && (
+        {!show?.is_past && (
           <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border)', marginBottom: 22 }}>
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: 'var(--muted)', marginBottom: 12 }}>Tickets</p>
             <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 16 }}>Starting {show.price}</p>
