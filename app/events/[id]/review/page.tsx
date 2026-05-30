@@ -75,7 +75,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
 
     const { error } = await supabase.from('reviews').insert({
       show_id: show?.id,
-      user_id: user.id,
+      user_id: user?.id,
       rating,
       headline: headline.trim(),
       body: body.trim() || null,

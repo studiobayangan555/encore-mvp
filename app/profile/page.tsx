@@ -87,7 +87,7 @@ export default function ProfilePage() {
       const { data: userCommentData } = await supabase
         .from('comments')
         .select('id, body, created_at, target_id, target_type')
-        .eq('user_id', user.id)
+        .eq('user_id', user?.id ?? '')
         .is('parent_id', null)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -99,7 +99,7 @@ export default function ProfilePage() {
           .from('comments')
           .select('id')
           .in('parent_id', commentIds)
-          .neq('user_id', user.id)
+          .neq('user_id', user?.id ?? '')
           .limit(1)
         if (replies && replies.length > 0) setUnreadReplies(true)
       }
@@ -113,7 +113,7 @@ export default function ProfilePage() {
 
       // Build fallback profile immediately so page never hangs
       const fallback = {
-        id: user.id,
+        id: user?.id ?? '',
         display_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Fan',
         email: user.email || '',
         countries: [] as string[],
@@ -126,7 +126,7 @@ export default function ProfilePage() {
 
       // Then try to enrich with database data
       const { data: prof } = await supabase
-        .from('profiles').select('*').eq('id', user.id).single()
+        .from('profiles').select('*').eq('id', user?.id ?? '').single()
       if (prof) {
         setProfile(prof)
         setSettingsForm({ display_name: prof.display_name || fallback.display_name, countries: prof.countries || [] })
@@ -150,7 +150,7 @@ export default function ProfilePage() {
       const { data: userCommentData } = await supabase
         .from('comments')
         .select('id, body, created_at, target_id, target_type')
-        .eq('user_id', user.id)
+        .eq('user_id', user?.id ?? '')
         .is('parent_id', null)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -162,7 +162,7 @@ export default function ProfilePage() {
           .from('comments')
           .select('id')
           .in('parent_id', commentIds)
-          .neq('user_id', user.id)
+          .neq('user_id', user?.id ?? '')
           .limit(1)
         if (replies && replies.length > 0) setUnreadReplies(true)
       }
@@ -179,7 +179,7 @@ export default function ProfilePage() {
     await supabase.from('profiles').update({
       display_name: settingsForm.display_name,
       countries: settingsForm.countries,
-    }).eq('id', user.id)
+    }).eq('id', user?.id ?? '')
     setProfile(prev => prev ? { ...prev, display_name: settingsForm.display_name, countries: settingsForm.countries } : prev)
     setSaving(false)
     setShowSettings(false)
@@ -196,7 +196,7 @@ export default function ProfilePage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from('saved_shows').delete().match({ user_id: user.id, show_id: showId })
+    await supabase.from('saved_shows').delete().match({ user_id: user?.id ?? '', show_id: showId })
     setSavedShows(prev => prev.filter(s => s.shows?.id !== showId))
   }
 

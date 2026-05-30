@@ -37,7 +37,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         const { data: savedData } = await supabase
           .from('saved_shows')
           .select('status')
-          .eq('user_id', session.user.id)
+          .eq('user_id', session.user?.id ?? '')
           .eq('show_id', s.id)
           .single()
         if (savedData) {
