@@ -210,7 +210,7 @@ export default function ProfilePage() {
   }
 
   const displayName = profile?.display_name || profile?.email?.split('@')[0] || 'Your Name'
-  const initials = displayName.slice(0, 2).toUpperCase()
+  const initials = (displayName || "??").slice(0, 2).toUpperCase()
   const tabs = [
     { key: 'reviews' as const, label: 'My Reviews', count: reviews.length },
     { key: 'going' as const, label: 'Going', count: goingShows.length },

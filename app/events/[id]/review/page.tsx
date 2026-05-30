@@ -74,7 +74,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
     if (!user) { router.push('/auth/login'); return }
 
     const { error } = await supabase.from('reviews').insert({
-      show_id: show.id,
+      show_id: show?.id,
       user_id: user.id,
       rating,
       headline: headline.trim(),
@@ -92,7 +92,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
     if (error) {
       if (error.code === '23505') {
         setHeadlineError(false)
-        alert('You have already reviewed this show.')
+        alert('You have already reviewed this show?.')
         return
       }
       console.error(error)
@@ -112,7 +112,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
           <Stars rating={rating} size={18} />
           {photos.length > 0 && <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 8 }}>{photos.length} photo{photos.length > 1 ? 's' : ''} uploaded</p>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 32, width: '100%', maxWidth: 300 }}>
-            <button onClick={() => router.push(`/events/${show.id}`)} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, padding: '14px 0', borderRadius: 10, border: 'none', cursor: 'pointer' }}>Back to {show.artist}</button>
+            <button onClick={() => router.push(`/events/${show?.id}`)} style={{ background: 'var(--accent)', color: 'var(--bg)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, padding: '14px 0', borderRadius: 10, border: 'none', cursor: 'pointer' }}>Back to {show?.artist}</button>
             <button onClick={() => router.push('/reviews')} style={{ background: 'transparent', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, padding: '14px 0', borderRadius: 10, border: '1px solid var(--border)', cursor: 'pointer' }}>See all reviews</button>
           </div>
         </div>
@@ -130,8 +130,8 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
       <div style={{ display: 'flex', gap: 14, alignItems: 'center', background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: 14, marginBottom: 32 }}>
         <div style={{ width: 48, height: 48, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
         <div>
-          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 3 }}>{show.artist}</p>
-          <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show.venue} · {show.dateDisplay}</p>
+          <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 3 }}>{show?.artist}</p>
+          <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show?.venue} · {show?.dateDisplay}</p>
         </div>
       </div>
 
@@ -211,14 +211,14 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
       <div className="hidden lg:block">
         <TopNav />
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 48px' }}>
-          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show.artist, href: `/events/${show.id}` }, { label: 'Write Review' }]} />
+          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show?.artist, href: `/events/${show?.id}` }, { label: 'Write Review' }]} />
           <div style={{ display: 'flex', gap: 48, paddingTop: 8 }}>
             <aside style={{ width: 240, flexShrink: 0 }}>
               <div style={{ position: 'sticky', top: 80 }}>
                 <div style={{ height: 110, borderRadius: 10, background: 'linear-gradient(135deg,#1a0033,#4400aa)', marginBottom: 14 }} />
-                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{show.artist}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show.venue}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>{show.dateDisplay}</p>
+                <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{show?.artist}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show?.venue}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>{show?.dateDisplay}</p>
                 <hr style={{ border: 'none', borderTop: '1px solid var(--border)', marginBottom: 16 }} />
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 10 }}>Review tips</p>
                 {['Be specific about the show', 'One review per night', 'No setlist spoilers for upcoming dates'].map(tip => (
@@ -241,7 +241,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
         <div style={{ padding: '12px 18px 0' }}>
-          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show.artist, href: `/events/${show.id}` }, { label: 'Write Review' }]} />
+          <Breadcrumb crumbs={[{ label: 'Shows', href: '/events' }, { label: show?.artist, href: `/events/${show?.id}` }, { label: 'Write Review' }]} />
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 24, lineHeight: 1.2 }}>Write a Review</h1>
           {form}
         </div>
