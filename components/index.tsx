@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { useSession } from '@/components/session-provider'
 import { usePathname } from 'next/navigation'
@@ -63,10 +64,13 @@ export function ShowPoster({
       >
         {posterUrl ? (
           <>
-            <img
+            <Image
               src={posterUrl}
               alt={title || ''}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
+              style={{ objectFit: 'cover' }}
+              unoptimized={posterUrl.startsWith('http') && !posterUrl.includes('enc.asia')}
             />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,10,15,0.08)' }} />
           </>
@@ -898,7 +902,9 @@ export function AdSpot({ placement = 'sidebar' }: { placement?: string }) {
 
   return (
     <a href={ad.link_url} target="_blank" rel="noopener" onClick={handleClick} style={{ display: 'block', width: '100%', marginBottom: 28, borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border)', textDecoration: 'none' }}>
-      <img src={ad.image_url} alt={ad.title || 'Advertisement'} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
+      <div style={{ position: 'relative', width: '100%', height: 200 }}>
+          <Image src={ad.image_url} alt={ad.title || 'Advertisement'} fill style={{ objectFit: 'cover' }} unoptimized />
+        </div>
     </a>
   )
 }
