@@ -10,8 +10,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter()
   const post = BLOG_POSTS.find(p => p.slug === params.slug) || BLOG_POSTS[0]
   const relatedShow = post.showId ? SHOWS.find(s => s.id === post.showId) : null
-  const related = [].filter(p => p.id !== post.id).slice(0, 3)
-  const comments = [].filter(c => c.targetId === post.slug && c.targetType === 'post')
+  const related = BLOG_POSTS.filter(p => p.id !== post.id).slice(0, 3)
+  const comments: any[] = []
   const truncTitle = post.title.length > 30 ? post.title.slice(0, 30) + '…' : post.title
   const url = typeof window !== 'undefined' ? window.location.href : `https://encore.app/blog/${post.slug}`
 
