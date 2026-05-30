@@ -8,7 +8,7 @@ import { BLOG_POSTS, SHOWS, COMMENTS } from '@/lib/data'
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter()
-  const post = BLOG_POSTS.find(p => p.slug === params.slug) || BLOG_POSTS[0]
+  const post = (BLOG_POSTS.find(p => p.slug === params.slug) || BLOG_POSTS[0]) as any
   const relatedShow = post.showId ? SHOWS.find(s => s.id === post.showId) : null
   const related = BLOG_POSTS.filter(p => p.id !== post.id).slice(0, 3)
   const comments: any[] = []
