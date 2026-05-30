@@ -98,7 +98,7 @@ export default function SubmitPage() {
             {step === 'done' ? <DoneState /> : (
               <>
                 <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 8 }}>Submit a show</h1>
-                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Know about a gig, concert, or festival that's not on encore yet? Add it here. We'll review and publish it within 24 hours.</p>
+                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Want a show reviewed that's not on the list? Share the details, and we will review and publish it within 24 hours.</p>
 
                 {step === 'show' && <ShowForm form={form} set={set} onNext={() => setStep('account')} />}
                 {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}

@@ -36,10 +36,21 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
   font-size: 15px;
   line-height: 1.6;
   transition: background 0.2s, color 0.2s;
+}
+
+/* Map font variables for inline style usage */
+.font-syne, [style*="Syne"] {
+  font-family: var(--font-syne), 'Syne', sans-serif !important;
+}
+.font-unbounded, [style*="Unbounded"] {
+  font-family: var(--font-unbounded), 'Unbounded', sans-serif !important;
+}
+.font-dm-sans, [style*="DM Sans"] {
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif !important;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
