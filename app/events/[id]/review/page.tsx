@@ -131,7 +131,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
         <div style={{ width: 48, height: 48, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', flexShrink: 0 }} />
         <div>
           <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 3 }}>{show?.artist}</p>
-          <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show?.venue} · {show?.dateDisplay}</p>
+          <p style={{ fontSize: 13, color: 'var(--muted)' }}>{show?.venue} · {show?.date_display}</p>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ export default function WriteReviewPage({ params }: { params: { id: string } }) 
                 <div style={{ height: 110, borderRadius: 10, background: 'linear-gradient(135deg,#1a0033,#4400aa)', marginBottom: 14 }} />
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{show?.artist}</p>
                 <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show?.venue}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>{show?.dateDisplay}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>{show?.date_display}</p>
                 <hr style={{ border: 'none', borderTop: '1px solid var(--border)', marginBottom: 16 }} />
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--text)', marginBottom: 10 }}>Review tips</p>
                 {['Be specific about the show', 'One review per night', 'No setlist spoilers for upcoming dates'].map(tip => (
