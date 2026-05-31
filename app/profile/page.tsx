@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, Breadcrumb, Stars, Avatar, S } from '@/components'
 import { createClient } from '@/lib/supabase'
-import { SHOWS } from '@/lib/data'
 
 interface Profile {
   id: string

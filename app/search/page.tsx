@@ -130,22 +130,18 @@ function SearchResults() {
           {activeTab === 'all' && (
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Reviews</p>
           )}
-          {showReviews.map(review => {
-            const show = SHOWS.find(s => s.id === review.showId) || SHOWS[0]
-            return (
-              <Link key={review.id} href={`/events/${show.id}`} style={{ textDecoration: 'none', display: 'flex', gap: 16, alignItems: 'flex-start', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
-                <Avatar initials={review.initials} size={44} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>{review.author}</p>
-                    <Stars rating={review.rating} size={12} />
-                  </div>
-                  <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{show.artist} · {show.venue}</p>
-                  <p style={{ fontSize: 14, color: 'var(--text)', fontStyle: 'italic' }}>"{review.headline}"</p>
+          {showReviews.map((review: any) => (
+            <Link key={review.id} href={`/events/${review.show_id || review.showId || ''}`} style={{ textDecoration: 'none', display: 'flex', gap: 16, alignItems: 'flex-start', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
+              <Avatar initials={(review.author || '??').slice(0,2).toUpperCase()} size={44} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>{review.author}</p>
+                  <Stars rating={review.rating} size={12} />
                 </div>
-              </Link>
-            )
-          })}
+                <p style={{ fontSize: 14, color: 'var(--text)', fontStyle: 'italic' }}>"{review.headline}"</p>
+              </div>
+            </Link>
+          ))}
         </div>
       )}
 

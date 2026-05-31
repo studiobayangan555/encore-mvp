@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, BlogImage, AdSpot, Breadcrumb, CategoryBadge, Avatar, Stars, ShareBar, CommentsSection, S, ArrowLeft } from '@/components'
-import { BLOG_POSTS, SHOWS, COMMENTS } from '@/lib/data'
+import { BLOG_POSTS, SHOWS } from '@/lib/data'
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter()
