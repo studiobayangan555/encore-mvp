@@ -886,9 +886,8 @@ export function AdSpot({ placement = 'sidebar' }: { placement?: string }) {
     const supabase = createClient()
     await supabase.from('ads').update({ clicks: ad ? undefined : 0 }).eq('id', ad.id)
     // Use rpc for atomic increment
-    supabase.rpc('increment_ad_clicks', { ad_id: ad.id }).catch(() => {
-      // Fallback: just navigate
-    })
+    // Atomic increment click count (fire and forget)
+    ;(async () => { await supabase.rpc('increment_ad_clicks', { ad_id: ad.id }) })()
   }
 
   if (!ad) {
