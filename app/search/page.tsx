@@ -131,7 +131,7 @@ function SearchResults() {
             <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: 'var(--muted)', marginBottom: 16 }}>Reviews</p>
           )}
           {showReviews.map((review: any) => (
-            <Link key={review.id} href={`/events/${review.show_id || review.showId || ''}`} style={{ textDecoration: 'none', display: 'flex', gap: 16, alignItems: 'flex-start', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
+            <Link key={review.id} href={`/events/${review.show_id || review.show_id || ''}`} style={{ textDecoration: 'none', display: 'flex', gap: 16, alignItems: 'flex-start', padding: '16px 0', borderBottom: '1px solid var(--border)', color: 'inherit' }}>
               <Avatar initials={(review.author || '??').slice(0,2).toUpperCase()} size={44} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -157,7 +157,7 @@ function SearchResults() {
               <div style={{ flex: 1 }}>
                 <div style={{ marginBottom: 6 }}><CategoryBadge category={post.category} /></div>
                 <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 14, color: 'var(--text)', lineHeight: 1.3, marginBottom: 4 }}>{post.title}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)' }}>{post.author} · {post.readTime}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)' }}>{post.author} · {post.read_time}</p>
               </div>
             </Link>
           ))}

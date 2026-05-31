@@ -9,7 +9,7 @@ import { BLOG_POSTS, SHOWS } from '@/lib/data'
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter()
   const post = (BLOG_POSTS.find(p => p.slug === params.slug) || BLOG_POSTS[0]) as any
-  const relatedShow = post.showId ? SHOWS.find(s => s.id === post.showId) : null
+  const relatedShow = post.show_id ? SHOWS.find(s => s.id === post.show_id) : null
   const related = BLOG_POSTS.filter(p => p.id !== post.id).slice(0, 3)
   const comments: any[] = []
   const truncTitle = post.title.length > 30 ? post.title.slice(0, 30) + '…' : post.title
@@ -30,7 +30,7 @@ By the end, the crowd was fully surrendered. Not just singing along — fully go
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 20, borderBottom: '1px solid var(--border)', marginBottom: 24 }}>
         <Avatar initials={post.author.slice(0,2).toUpperCase()} size={36} />
         <p style={{ fontSize: 14, color: 'var(--text)' }}>{post.author}</p>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.readTime} · ♥ {post.likes}</p>
+        <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.read_time} · ♥ {post.likes}</p>
       </div>
       {post.deck && <p style={{ fontSize: 17, color: 'var(--text)', lineHeight: 1.7, marginBottom: 24, fontWeight: 500 }}>{post.deck}</p>}
       {body.split('\n\n').map((para, i) => {
