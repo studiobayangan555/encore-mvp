@@ -619,10 +619,10 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
           .order('created_at', { ascending: true })
 
         // Fetch all display names in one query
-        const allUserIds = [...new Set([
+        const allUserIds = Array.from(new Set([
           ...data.map((c: any) => c.user_id),
           ...(allReplies || []).map((r: any) => r.user_id)
-        ])]
+        ]))
         const { data: profiles } = await supabase
           .from('profiles')
           .select('id, display_name')
