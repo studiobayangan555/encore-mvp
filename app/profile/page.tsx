@@ -62,6 +62,7 @@ export default function ProfilePage() {
 
   async function loadProfile() {
     const supabase = createClient()
+    let user: any = null  // declared outside try/catch so catch block can access it
     
     // Hard timeout — never hang more than 8 seconds
     const timeout = setTimeout(() => {
@@ -70,9 +71,6 @@ export default function ProfilePage() {
     }, 8000)
     
     try {
-      // Try getUser first — most reliable with new Supabase keys
-      let user: any = null
-      
       // getSession is fast and local — doesn't make network requests
       const { data: { session } } = await supabase.auth.getSession()
       user = session?.user || null
@@ -114,8 +112,8 @@ export default function ProfilePage() {
       // Build fallback profile immediately so page never hangs
       const fallback = {
         id: user?.id ?? '',
-        display_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Fan',
-        email: user.email || '',
+        display_name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Fan',
+        email: user?.email || '',
         countries: [] as string[],
         show_count: 0,
         review_count: 0,
@@ -134,12 +132,12 @@ export default function ProfilePage() {
 
       const { data: revs } = await supabase
         .from('reviews').select('id, rating, headline, created_at, shows(id, artist)')
-        .eq('user_id', user.id).order('created_at', { ascending: false })
+        .eq('user_id', user?.id ?? '').order('created_at', { ascending: false })
       if (revs) setReviews(revs as any)
 
       const { data: saved } = await supabase
         .from('saved_shows').select('saved_at, status, shows(id, artist, venue, city, date_display, price, country)')
-        .eq('user_id', user.id).order('saved_at', { ascending: false })
+        .eq('user_id', user?.id ?? '').order('saved_at', { ascending: false })
       if (saved) {
         setSavedShows((saved as any).filter((s: any) => s.status !== 'going'))
         setGoingShows((saved as any).filter((s: any) => s.status === 'going'))
