@@ -635,8 +635,8 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
           if (!replyMap[r.parent_id]) replyMap[r.parent_id] = []
           const name = profileMap[r.user_id] || 'Fan'
           replyMap[r.parent_id].push({
-            id: r.id, targetId, targetType,
-            author: name, initials: name.slice(0,2).toUpperCase(),
+            id: r.id, targetId, targetType: targetType as 'show' | 'post',
+            author: name, initials: (name || '??').slice(0,2).toUpperCase(),
             body: r.body, date: new Date(r.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
             likes: r.likes || 0, replies: [],
           })
@@ -645,8 +645,8 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
         setComments(data.map((c: any) => {
           const name = profileMap[c.user_id] || 'Fan'
           return {
-            id: c.id, targetId, targetType,
-            author: name, initials: name.slice(0,2).toUpperCase(),
+            id: c.id, targetId, targetType: targetType as 'show' | 'post',
+            author: name, initials: (name || '??').slice(0,2).toUpperCase(),
             body: c.body,
             date: new Date(c.created_at).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }),
             likes: c.likes || 0,
@@ -680,7 +680,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
     }
     if (data) {
       const { data: prof } = await supabase.from('profiles').select('display_name').eq('id', user?.id ?? '').single()
-      const name = prof?.display_name || user.email?.split('@')[0] || 'Fan'
+      const name = prof?.display_name || user?.email?.split('@')[0] || 'Fan'
       setComments(prev => [{
         id: data.id, targetId, targetType: targetType as 'show' | 'post',
         author: name, initials: name.slice(0,2).toUpperCase(),
@@ -712,7 +712,7 @@ export function CommentsSection({ targetId, targetType = 'show', initialComments
     }
     if (data) {
       const { data: prof } = await supabase.from('profiles').select('display_name').eq('id', user?.id ?? '').single()
-      const name = prof?.display_name || user.email?.split('@')[0] || 'Fan'
+      const name = prof?.display_name || user?.email?.split('@')[0] || 'Fan'
       setComments(prev => prev.map(c => c.id === commentId ? {
         ...c, replies: [...(c.replies || []), {
           id: data.id, targetId, targetType: targetType as 'show' | 'post',
