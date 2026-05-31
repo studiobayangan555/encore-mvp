@@ -196,7 +196,7 @@ export async function getReviewsByShow(showId: string): Promise<Review[]> {
 
 // ─── COMMENTS ────────────────────────────────────────────────
 
-export async function getCommentsByTarget(targetId: string, targetType: string): Promise<Comment[]> {
+export async function getCommentsByTarget(targetId: string, targetType: string): Promise<any[]> {
   const supabase = createDataClient()
   const { data, error } = await supabase
     .from('comments')
@@ -216,7 +216,7 @@ export async function getCommentsByTarget(targetId: string, targetType: string):
       .order('created_at', { ascending: true })
     return { ...comment, replies: replies || [] }
   }))
-  return withReplies
+  return withReplies as any[]
 }
 
 // ─── BLOG ─────────────────────────────────────────────────────
