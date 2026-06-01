@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { TopNav, BottomNav, MobileHeader, MobileFooter, Footer, Breadcrumb, S } from '@/components'
 import { createClient } from '@/lib/supabase'
+import { useSession } from '@/components/session-provider'
 
 const COUNTRIES = ['Malaysia', 'Singapore', 'Thailand', 'Indonesia', 'Philippines']
 const TYPES = ['concert', 'gig', 'festival', 'multi-night']
@@ -23,6 +24,7 @@ const LABEL = {
 } as const
 
 export default function SubmitPage() {
+  const { user } = useSession()
   const [step, setStep] = useState<'show' | 'account' | 'done'>('show')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -47,17 +49,18 @@ export default function SubmitPage() {
     setError('')
     const supabase = createClient()
 
-    let userId: string | null = null
+    let userId: string | null = user?.id || null
+    let submitterName = account.name
+    let submitterEmail = account.email
 
-    // Try to create account or sign in
-    if (account.email && account.password) {
+    // If not logged in, create or sign in
+    if (!user && account.email && account.password) {
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: account.email,
         password: account.password,
         options: { data: { full_name: account.name } }
       })
       if (signUpError) {
-        // Maybe already exists — try sign in
         const { data: signInData } = await supabase.auth.signInWithPassword({
           email: account.email, password: account.password
         })
@@ -67,11 +70,16 @@ export default function SubmitPage() {
       }
     }
 
+    // If logged in, use their profile info
+    if (user) {
+      submitterEmail = user.email || ''
+    }
+
     // Submit the show
     const { error: subError } = await supabase.from('show_submissions').insert({
       ...form,
-      submitter_name: account.name,
-      submitter_email: account.email,
+      submitter_name: submitterName,
+      submitter_email: submitterEmail,
       submitter_user_id: userId,
       submitter_note: account.submitter_note,
       status: 'pending',
@@ -98,9 +106,9 @@ export default function SubmitPage() {
             {step === 'done' ? <DoneState /> : (
               <>
                 <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 8 }}>Submit a show</h1>
-                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Want a show reviewed that's not on the list? Share the details, and we will review and publish it within 24 hours.</p>
+                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Know about a gig, concert, or festival that's not on encore yet? Add it here. We'll review and publish it within 24 hours.</p>
 
-                {step === 'show' && <ShowForm form={form} set={set} onNext={() => setStep('account')} />}
+                {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} />}
                 {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
               </>
             )}
@@ -118,7 +126,7 @@ export default function SubmitPage() {
 
           {step === 'done' ? <DoneState /> : (
             <>
-              {step === 'show' && <ShowForm form={form} set={set} onNext={() => setStep('account')} />}
+              {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} />}
               {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
             </>
           )}
@@ -130,20 +138,29 @@ export default function SubmitPage() {
   )
 }
 
-function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => void }) {
+function ShowForm({ form, set, onNext, isLoggedIn }: { form: any, set: any, onNext: () => void, isLoggedIn: boolean }) {
   const canProceed = form.artist && form.venue && form.city
 
   const fieldStyle = { marginBottom: 20 }
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
-        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)' }}>1</div>
-        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>Show details</span>
-        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--muted)' }}>2</div>
-        <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)' }}>Your account</span>
-      </div>
+      {/* Step indicator — only show steps if not logged in */}
+      {!isLoggedIn && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--bg)' }}>1</div>
+          <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>Show details</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--surface2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, color: 'var(--muted)' }}>2</div>
+          <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--muted)' }}>Your account</span>
+        </div>
+      )}
+      {isLoggedIn && (
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 16px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 18 }}>✓</span>
+          <p style={{ fontSize: 13, color: 'var(--muted)', margin: 0 }}>Submitting as <strong style={{ color: 'var(--text)' }}>you</strong> — your account is already linked to this submission.</p>
+        </div>
+      )}
 
       <div style={fieldStyle}>
         <label style={LABEL}>Artist / Show name *</label>
@@ -231,7 +248,7 @@ function ShowForm({ form, set, onNext }: { form: any, set: any, onNext: () => vo
         disabled={!canProceed}
         style={{ width: '100%', padding: '13px', background: canProceed ? 'var(--accent)' : 'var(--surface2)', color: canProceed ? 'var(--bg)' : 'var(--muted)', border: 'none', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, cursor: canProceed ? 'pointer' : 'not-allowed', transition: 'all .15s' }}
       >
-        Next — Your account →
+        {isLoggedIn ? 'Submit show →' : 'Next — Your account →'}
       </button>
     </div>
   )
