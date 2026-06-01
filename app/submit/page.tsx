@@ -76,6 +76,7 @@ export default function SubmitPage() {
     }
 
     // Submit the show
+    console.log('[submit] inserting show submission...', { form, userId })
     const { error: subError } = await supabase.from('show_submissions').insert({
       ...form,
       submitter_name: submitterName,
@@ -88,7 +89,7 @@ export default function SubmitPage() {
     setLoading(false)
     if (subError) {
       setError('Something went wrong. Please try again.')
-      console.error(subError)
+      console.error('[submit] error:', subError)
     } else {
       setStep('done')
     }
@@ -108,7 +109,7 @@ export default function SubmitPage() {
                 <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)', marginBottom: 8 }}>Submit a show</h1>
                 <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.7 }}>Know about a gig, concert, or festival that's not on encore yet? Add it here. We'll review and publish it within 24 hours.</p>
 
-                {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} />}
+                {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} loading={loading} error={error} />}
                 {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
               </>
             )}
@@ -126,7 +127,7 @@ export default function SubmitPage() {
 
           {step === 'done' ? <DoneState /> : (
             <>
-              {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} />}
+              {step === 'show' && <ShowForm form={form} set={set} onNext={() => user ? handleSubmit() : setStep('account')} isLoggedIn={!!user} loading={loading} error={error} />}
               {step === 'account' && <AccountForm account={account} setAccount={setAccount} onBack={() => setStep('show')} onSubmit={handleSubmit} loading={loading} error={error} />}
             </>
           )}
@@ -138,7 +139,7 @@ export default function SubmitPage() {
   )
 }
 
-function ShowForm({ form, set, onNext, isLoggedIn }: { form: any, set: any, onNext: () => void, isLoggedIn: boolean }) {
+function ShowForm({ form, set, onNext, isLoggedIn, loading = false, error = '' }: { form: any, set: any, onNext: () => void, isLoggedIn: boolean, loading?: boolean, error?: string }) {
   const canProceed = form.artist && form.venue && form.city
 
   const fieldStyle = { marginBottom: 20 }
@@ -243,12 +244,13 @@ function ShowForm({ form, set, onNext, isLoggedIn }: { form: any, set: any, onNe
         <textarea style={{ ...INPUT, resize: 'vertical' as const }} rows={3} value={form.description} onChange={e => set('description', e.target.value)} placeholder="Tell fans about the show..." />
       </div>
 
+      {error && <p style={{ fontSize: 13, color: '#f87171', marginBottom: 12 }}>{error}</p>}
       <button
         onClick={onNext}
-        disabled={!canProceed}
-        style={{ width: '100%', padding: '13px', background: canProceed ? 'var(--accent)' : 'var(--surface2)', color: canProceed ? 'var(--bg)' : 'var(--muted)', border: 'none', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, cursor: canProceed ? 'pointer' : 'not-allowed', transition: 'all .15s' }}
+        disabled={!canProceed || loading}
+        style={{ width: '100%', padding: '13px', background: (canProceed && !loading) ? 'var(--accent)' : 'var(--surface2)', color: (canProceed && !loading) ? 'var(--bg)' : 'var(--muted)', border: 'none', borderRadius: 10, fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, cursor: (canProceed && !loading) ? 'pointer' : 'not-allowed', transition: 'all .15s' }}
       >
-        {isLoggedIn ? 'Submit show →' : 'Next — Your account →'}
+        {loading ? 'Submitting…' : isLoggedIn ? 'Submit show →' : 'Next — Your account →'}
       </button>
     </div>
   )
