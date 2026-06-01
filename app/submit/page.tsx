@@ -78,7 +78,22 @@ export default function SubmitPage() {
     // Submit the show
     console.log('[submit] inserting show submission...', { form, userId })
     const { error: subError } = await supabase.from('show_submissions').insert({
-      ...form,
+      artist: form.artist,
+      venue: form.venue,
+      city: form.city,
+      country: form.country,
+      date: form.date,
+      date_display: form.date_display,
+      type: form.type,
+      genre: form.genre,
+      price: form.price,
+      ticket_url: form.ticket_url,
+      poster_url: form.poster_url,
+      description: form.description,
+      promoter: form.promoter,
+      lineup: form.lineup,
+      name: submitterName,
+      email: submitterEmail,
       submitter_name: submitterName,
       submitter_email: submitterEmail,
       submitter_user_id: userId,
