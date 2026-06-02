@@ -60,7 +60,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.read_time} · ♥ {post.likes}</p>
       </div>
       {post.deck && <p style={{ fontSize: 17, color: 'var(--text)', lineHeight: 1.7, marginBottom: 24, fontWeight: 500 }}>{post.deck}</p>}
-      {(post.content || '').split('\n\n').map((para, i) => {
+      {(post.body || '').split('\n\n').map((para, i) => {
         if (i === 1) return (
           <div key={i}>
             <div style={{ borderLeft: '2px solid var(--accent)', paddingLeft: 20, margin: '24px 0' }}>
@@ -117,7 +117,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </aside>
             <div style={{ flex: 1 }}>
-              <BlogImage imageUrl={post.cover_url || post.featured_image_url || post.image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: 320, borderRadius: 'var(--radius)', marginBottom: 32 }} />
+              <BlogImage imageUrl={post.featured_image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: 320, borderRadius: 'var(--radius)', marginBottom: 32 }} />
               {articleContent}
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
-        <BlogImage imageUrl={post.cover_url || post.featured_image_url || post.image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: '100%', height: 200 }} />
+        <BlogImage imageUrl={post.featured_image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: '100%', height: 200 }} />
         <div style={{ padding: '0 18px' }}>
           <Breadcrumb crumbs={[{ label: 'Blog', href: '/blog' }, { label: truncTitle }]} />
           {articleContent}
