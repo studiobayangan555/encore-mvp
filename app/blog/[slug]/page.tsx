@@ -55,7 +55,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <CategoryBadge category={post.category} />
       <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 28, color: 'var(--text)', lineHeight: 1.25, margin: '14px 0 16px' }}>{post.title}</h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 20, borderBottom: '1px solid var(--border)', marginBottom: 24 }}>
-        <Avatar initials={post.author.slice(0,2).toUpperCase()} size={36} />
+        <Avatar initials={(post.author || "??").slice(0,2).toUpperCase()} size={36} />
         <p style={{ fontSize: 14, color: 'var(--text)' }}>{post.author}</p>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.read_time} · ♥ {post.likes}</p>
       </div>
@@ -85,18 +85,10 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <div style={{ display: 'flex', gap: 48, paddingTop: 8 }}>
             <aside style={{ width: 240, flexShrink: 0 }}>
               <div style={{ position: 'sticky', top: 80 }}>
-                {relatedShow && (
-                  <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16, marginBottom: 20 }}>
-                    <div style={{ height: 80, borderRadius: 8, background: 'linear-gradient(135deg,#1a0033,#4400aa)', marginBottom: 12 }} />
-                    <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--text)', marginBottom: 4 }}>{relatedShow.artist}</p>
-                    <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 4 }}>{relatedShow.venue}</p>
-                    <Stars rating={relatedShow.rating} size={12} />
-                    <Link href={`/events/${relatedShow.id}/review`} style={{ display: 'block', marginTop: 12, border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 12, textAlign: 'center', padding: '8px 0', borderRadius: 8, textDecoration: 'none' }}>Write a Review</Link>
-                  </div>
-                )}
+
                 <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16, marginBottom: 20 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <Avatar initials={post.author.slice(0,2).toUpperCase()} size={36} />
+                    <Avatar initials={(post.author || "??").slice(0,2).toUpperCase()} size={36} />
                     <div>
                       <p style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 600, fontSize: 12, color: 'var(--text)' }}>{post.author}</p>
                       <p style={{ fontSize: 12, color: 'var(--muted)' }}>encore editorial</p>
