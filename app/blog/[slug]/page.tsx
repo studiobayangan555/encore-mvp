@@ -4,24 +4,51 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TopNav, BottomNav, Footer, MobileHeader, MobileFooter, BlogImage, AdSpot, Breadcrumb, CategoryBadge, Avatar, Stars, ShareBar, CommentsSection, S, ArrowLeft } from '@/components'
-import { BLOG_POSTS, SHOWS } from '@/lib/data'
+import { createClient } from '@/lib/supabase'
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter()
-  const post = (BLOG_POSTS.find(p => p.slug === params.slug) || BLOG_POSTS[0]) as any
-  const relatedShow = post.show_id ? SHOWS.find(s => s.id === post.show_id) : null
-  const related = BLOG_POSTS.filter(p => p.id !== post.id).slice(0, 3)
+  const [post, setPost] = useState<any>(null)
+  const [related, setRelated] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const comments: any[] = []
-  const truncTitle = post.title.length > 30 ? post.title.slice(0, 30) + '…' : post.title
-  const url = typeof window !== 'undefined' ? window.location.href : `https://encore.app/blog/${post.slug}`
 
-  const body = `The atmosphere inside the venue was unlike anything we had seen this year. From the moment the lights dropped, it was clear this was going to be a different kind of show — not just a performance, but an experience carefully constructed over months of production planning.
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('slug', params.slug)
+        .eq('is_published', true)
+        .maybeSingle()
 
-The sound was immaculate. Every seat in the upper tier still felt close, and the mix was clean enough that you could hear individual instruments clearly even in the floor pit. This is not something we say often about stadium shows in Malaysia, where the acoustics have historically been hit and miss.
+      if (!data) { router.push('/blog'); return }
+      setPost(data)
 
-What struck us most was the setlist — it leaned heavily on the new material but was sequenced in a way that felt like a genuine narrative arc rather than a random playlist. The older songs hit differently in that context, arriving at exactly the right moments to give the crowd something familiar to hold onto.
+      // Load related posts
+      const { data: rel } = await supabase
+        .from('blog_posts')
+        .select('id, title, slug, category, read_time, author')
+        .eq('is_published', true)
+        .neq('slug', params.slug)
+        .limit(3)
+      setRelated(rel || [])
+      setLoading(false)
+    }
+    load()
+  }, [params.slug])
 
-By the end, the crowd was fully surrendered. Not just singing along — fully gone. That collective transcendence is why we come to shows, and this one delivered it without question.`
+  if (loading) return (
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <p style={{ color: 'var(--muted)', fontFamily: 'DM Sans, sans-serif' }}>Loading…</p>
+    </div>
+  )
+
+  if (!post) return null
+
+  const truncTitle = (post.title || '').length > 30 ? post.title.slice(0, 30) + '…' : post.title
+  const url = typeof window !== 'undefined' ? window.location.href : `https://enc.asia/blog/${post.slug}`
 
   const articleContent = (
     <>
@@ -33,7 +60,7 @@ By the end, the crowd was fully surrendered. Not just singing along — fully go
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.read_time} · ♥ {post.likes}</p>
       </div>
       {post.deck && <p style={{ fontSize: 17, color: 'var(--text)', lineHeight: 1.7, marginBottom: 24, fontWeight: 500 }}>{post.deck}</p>}
-      {body.split('\n\n').map((para, i) => {
+      {(post.content || '').split('\n\n').map((para, i) => {
         if (i === 1) return (
           <div key={i}>
             <div style={{ borderLeft: '2px solid var(--accent)', paddingLeft: 20, margin: '24px 0' }}>
@@ -90,7 +117,7 @@ By the end, the crowd was fully surrendered. Not just singing along — fully go
               </div>
             </aside>
             <div style={{ flex: 1 }}>
-              <BlogImage imageUrl={post.featured_image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: 320, borderRadius: 'var(--radius)', marginBottom: 32 }} />
+              <BlogImage imageUrl={post.cover_url || post.featured_image_url || post.image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ height: 320, borderRadius: 'var(--radius)', marginBottom: 32 }} />
               {articleContent}
             </div>
           </div>
@@ -100,7 +127,7 @@ By the end, the crowd was fully surrendered. Not just singing along — fully go
 
       <div className="lg:hidden" style={{ paddingBottom: 80 }}>
         <MobileHeader />
-        <BlogImage imageUrl={post.featured_image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: '100%', height: 200 }} />
+        <BlogImage imageUrl={post.cover_url || post.featured_image_url || post.image_url} gradient='linear-gradient(135deg,#1a0033,#4400aa)' style={{ width: '100%', height: 200 }} />
         <div style={{ padding: '0 18px' }}>
           <Breadcrumb crumbs={[{ label: 'Blog', href: '/blog' }, { label: truncTitle }]} />
           {articleContent}
