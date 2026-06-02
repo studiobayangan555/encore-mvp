@@ -60,7 +60,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>· {post.read_time} · ♥ {post.likes}</p>
       </div>
       {post.deck && <p style={{ fontSize: 17, color: 'var(--text)', lineHeight: 1.7, marginBottom: 24, fontWeight: 500 }}>{post.deck}</p>}
-      {(post.body || '').split('\n\n').map((para, i) => {
+      {(post.body || '').split('\n\n').map((para: string, i: number) => {
         if (i === 1) return (
           <div key={i}>
             <div style={{ borderLeft: '2px solid var(--accent)', paddingLeft: 20, margin: '24px 0' }}>
