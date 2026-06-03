@@ -121,7 +121,7 @@ export default function PromotersPage() {
 
                   <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center' as const, marginTop: 16 }}>
                     Prefer to reach out directly?{' '}
-                    <a href="mailto:promoters@encore.app" style={{ color: 'var(--accent)' }}>promoters@encore.app</a>
+                    <a href="mailto:admin@studiobayangan.com" style={{ color: 'var(--accent)' }}>admin@studiobayangan.com</a>
                   </p>
                 </>
               )}
@@ -185,7 +185,7 @@ export default function PromotersPage() {
                 {loading ? 'Registering…' : 'Register Interest →'}
               </button>
               <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center' as const }}>
-                Or reach out directly: <a href="mailto:promoters@encore.app" style={{ color: 'var(--accent)' }}>promoters@encore.app</a>
+                Or reach out directly: <a href="mailto:admin@studiobayangan.com" style={{ color: 'var(--accent)' }}>admin@studiobayangan.com</a>
               </p>
             </>
           )}
