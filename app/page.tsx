@@ -104,7 +104,7 @@ export default function HomePage() {
         {/* 1. HERO */}
         <section style={{ background: 'linear-gradient(135deg,#0D0A1A 0%,#1a0033 40%,#080A0F 100%)', borderBottom: '1px solid var(--border)', padding: '80px 48px 72px', textAlign: 'center' as const, position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)', width: 600, height: 600, background: 'radial-gradient(circle,rgba(123,97,255,.07) 0%,transparent 70%)', pointerEvents: 'none' }} />
-          <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Southeast Asia's live music community</span>
+          <span style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 700, fontSize: 11, letterSpacing: '.12em', textTransform: 'uppercase' as const, color: 'var(--accent)', display: 'block', marginBottom: 20 }}>Live Music Community Reviews</span>
           <h1 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 52, color: 'white', lineHeight: 1.08, letterSpacing: '-.02em', marginBottom: 16 }}>
             <span style={{ color: 'white' }}>Was it worth</span><br /><span style={{ color: 'var(--accent)' }}>showing up?</span>
           </h1>
@@ -203,7 +203,7 @@ export default function HomePage() {
             <div>
               {sectionKicker('Discover')}
               <h2 style={{ fontFamily: 'Unbounded, sans-serif', fontWeight: 800, fontSize: 28, color: 'var(--text)' }}>Upcoming Shows</h2>
-              <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 4 }}>Concerts, gigs, and festivals across Southeast Asia.</p>
+              <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 4 }}>Concerts, gigs, and festivals across Malaysia and the region.</p>
             </div>
           </div>
 
